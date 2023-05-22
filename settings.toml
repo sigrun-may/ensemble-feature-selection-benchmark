@@ -14,16 +14,16 @@ testing = false
 # monitoring_node_password = "password"
 
 [data]
-name = "tiny"
+name = "separated"
 folder = "/experiments/data"
 number_of_samples = 30
-number_of_features = 13
+number_of_features = 2000
 pos_label = 1
 
 [parallel_processes]
 init_ray = false
-hpo_reverse = -1
-hpo_standard = -1
+hpo_reverse = 1
+hpo_standard = 1
 
 yeo_johnson_c = 1
 yeo_johnson_fpga = 1
@@ -38,7 +38,7 @@ max_concurrent_trials_hpo_ray = 1
 feature_selection_methods = 1
 reverse_feature_selection = 1
 training = 1
-n_jobs_training = 4
+n_jobs_training = 1
 
 # number of threads for LightGBM
 # 0 means default number of threads in OpenMP, set to 1 for serial training
@@ -47,13 +47,13 @@ n_jobs_training = 4
 # do not set it too large if your dataset is small (for instance, do not use 64 threads for a dataset with 10,000 rows)
 # be aware a task manager or any similar CPU monitoring tool might report that cores not being fully utilized.
 # This is normal  (see https://lightgbm.readthedocs.io/en/latest/Parameters.html)
-num_threads_lightgbm = 4
+num_threads_lightgbm = 1
 # set device_type_lightgbm to "cpu" for CPU instead of GPU training
 device_type_lightgbm = "cpu"
 # "serial" = single machine tree learner
 # "feature" = feature parallel tree learner, aliases: feature_parallel
 # more details in https://lightgbm.readthedocs.io/en/latest/Parallel-Learning-Guide.html
-tree_learner = "feature"
+tree_learner = "serial"
 
 #num_threads_lightgbm = 0
 #device_type_lightgbm = "cuda"
