@@ -1,0 +1,6 @@
+.. _ensemble_feature_selection_benchmark_code_doc:
+
+:mod:`~ensemble_feature_selection_benchmark`
+======================
+
+.. automodule:: ensemble_feature_selection_benchmark
