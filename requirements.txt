@@ -1,0 +1,35 @@
+black
+flake8
+isort
+mdformat
+pydocstyle
+pylint
+pylintfileheader
+mypy
+lightgbm
+optuna
+numpy
+pandas
+scikit-learn
+joblib
+statistics
+shap
+ray
+scikit-learn
+dynaconf
+toml
+pymongo
+setuptools
+pyyaml
+pyrankvote
+scipy
+requests
+xmltodict
+tomlkit
+gitpython
+pref_voting
+numpy==1.23.5
+numba==0.56.4
+# celer
+# relaxed_lasso_continental
+# cv_pruner

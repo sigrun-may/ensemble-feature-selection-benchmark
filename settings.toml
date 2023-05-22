@@ -1,0 +1,145 @@
+# testing = true
+testing = false
+
+# set in .secrets.toml (see dynaconf documentation)
+# .secrets.toml must be located in the same directory as this settings.toml
+# env = "local" | "cluster"
+
+# if env = "cluster" and if data is stored in mongodb set following additional parameter in .secrets.toml :
+# mongo_db_url = "mongodb://user:password@storage:12345/"
+
+# if env = "cluster" and energy consumption should be monitored set following additional parameters in .secrets.toml :
+# monitoring_node = "url for a monitoring node"
+# monitoring_node_user = "user_name"
+# monitoring_node_password = "password"
+
+[data]
+name = "tiny"
+folder = "/experiments/data"
+number_of_samples = 30
+number_of_features = 13
+pos_label = 1
+
+[parallel_processes]
+init_ray = false
+hpo_reverse = -1
+hpo_standard = -1
+
+yeo_johnson_c = 1
+yeo_johnson_fpga = 1
+preprocessing_inner_cv = 1
+preprocessing_outer_cv = 1
+correlation_matrix_fpga = 1
+
+inner_cv = 1
+outer_cv = 1
+
+max_concurrent_trials_hpo_ray = 1
+feature_selection_methods = 1
+reverse_feature_selection = 1
+training = 1
+n_jobs_training = 4
+
+# number of threads for LightGBM
+# 0 means default number of threads in OpenMP, set to 1 for serial training
+# for the best speed, set this to the number of real CPU cores, not the number of threads
+# (most CPUs use hyper-threading to generate 2 threads per CPU core)
+# do not set it too large if your dataset is small (for instance, do not use 64 threads for a dataset with 10,000 rows)
+# be aware a task manager or any similar CPU monitoring tool might report that cores not being fully utilized.
+# This is normal  (see https://lightgbm.readthedocs.io/en/latest/Parameters.html)
+num_threads_lightgbm = 4
+# set device_type_lightgbm to "cpu" for CPU instead of GPU training
+device_type_lightgbm = "cpu"
+# "serial" = single machine tree learner
+# "feature" = feature parallel tree learner, aliases: feature_parallel
+# more details in https://lightgbm.readthedocs.io/en/latest/Parallel-Learning-Guide.html
+tree_learner = "feature"
+
+#num_threads_lightgbm = 0
+#device_type_lightgbm = "cuda"
+#tree_learner = "feature"
+
+[nodes]
+baseBoardIds = [4, 6]
+
+[preprocessing]
+scale_and_power_transform = true
+preprocessing_parallel = "PreprocessingSerial"
+# "YeoJohnsonSklearn" "YeoJohnsonC"
+yeo_johnson = "YeoJohnsonSklearn"
+path_yeo_johnson_c_library = "yeo-johnson-transformation/x64/bin/comInterface.so"
+path_yeo_johnson_module = "yeo-johnson-transformation/python_bindings/c_accesspoint.py"
+interval_start = -3
+interval_end = 3
+interval_parameter = 14
+standardize = true
+time_stamps = false
+path_yeo_johnson_fpga_library = ""
+train_correlation_method = "PandasPearsonCorrelation"
+feature_cluster_correlation_method = "spearman"
+
+[selection_method]
+methods = ["RandomForestLightGBM", "ExtraTreesLightGBM", "GradientBoostingDecisionTreeLightGBM", "LassoSklearn", "RandomForestSklearn", "SVC",] # "ReverseLassoSklearn"]
+
+[aggregation_method_cv]
+methods = ["ArithmeticMean"]
+
+[aggregation_ensemble_feature_selection]
+methods = [ "Sum", "SumRanked", "ArithmeticMean", "ArithmeticMeanRanked", "Count", "CountRanked", "BordaCount", "ReciprocalRanking", "FeatureOccurrenceFrequency"]
+n = 20
+
+[ensemble]
+methods = ["LassoSklearn cumulated_macro_importance", "ReverseLassoSklearn",
+    'LassoSklearn cumulated_micro_importance', 'LassoSklearnRayTune cumulated_macro_importance',
+    'LassoSklearn cumulated_shap_values', 'LassoSklearnRayTune cumulated_shap_values',
+    'LassoSklearnRayTune cumulated_micro_importance',
+    'RandomForestSklearn cumulated_micro_importance', 'RandomForestSklearn cumulated_macro_importance',
+    'RandomForestSklearn cumulated_shap_values', 'LinearSVC cumulated_micro_importance', 'LinearSVC cumulated_macro_importance',
+    'LinearSVC cumulated_shap_values', 'LinearSVC cumulated_micro_importance', 'RandomForestLightGBM cumulated_macro_importance',
+    'RandomForestLightGBM cumulated_shap_values','RandomForestLightGBM cumulated_micro_importance', 'ExtraTreesLightGBM cumulated_macro_importance',
+    'ExtraTreesLightGBM cumulated_shap_values','ExtraTreesLightGBM cumulated_micro_importance', 'GradientBoostingDecisionTreeLightGBM cumulated_macro_importance',
+    'GradientBoostingDecisionTreeLightGBM cumulated_shap_values',]
+
+[reverse_fs_parameter]
+train_correlation_threshold = 0.3
+distance_threshold = 0.1
+n_trials = 5
+n_startup_trials = 3
+
+[standard_fs_parameter]
+shap = true
+
+[SvcSklearnOptuna]
+n_trials = 5
+
+[LassoSklearnOptuna]
+n_trials = 30
+pruning_threshold = 0.1
+
+[RandomForestSklearnOptuna]
+n_trials = 2
+pruning_threshold = 0.1
+
+[LightgbmOptuna]
+n_trials = 10
+pruning_threshold = 0.1
+
+[ReverseLassoSklearn]
+pruning_threshold = 0.1
+
+[cv]
+n_outer_folds = 6
+n_inner_folds = 5
+
+[data_storage]
+path_selection_results = "/selection_results"
+path_validation_results = "/validation_results"
+path_preprocessing_results = ""
+path_sqlite_for_optuna = "sqlite:///optuna_test.db"
+
+[logging]
+level = "DEBUG"
+log_dir = "~/ray_results"
+hpo_reverse = false
+hpo_standard = false
+optuna_trials = false
