@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ensemble_feature_selection_benchmark &mdash; ensemble_feature_selection_benchmark  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Code Documentation" href="../code-doc.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            ensemble_feature_selection_benchmark
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../code-doc.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ensemble_feature_selection_benchmark</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ensemble_feature_selection_benchmark.check_feature_selection_result.check_feature_selection_result_outer_cv"><code class="docutils literal notranslate"><span class="pre">check_feature_selection_result_outer_cv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ensemble_feature_selection_benchmark.check_feature_selection_result.check_raw_feature_selection_result_dict"><code class="docutils literal notranslate"><span class="pre">check_raw_feature_selection_result_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.DataSplit"><code class="docutils literal notranslate"><span class="pre">DataSplit</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.DataSplit.__getnewargs__"><code class="docutils literal notranslate"><span class="pre">DataSplit.__getnewargs__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.DataSplit.__new__"><code class="docutils literal notranslate"><span class="pre">DataSplit.__new__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.DataSplit.__repr__"><code class="docutils literal notranslate"><span class="pre">DataSplit.__repr__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.DataSplit._asdict"><code class="docutils literal notranslate"><span class="pre">DataSplit._asdict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.DataSplit._make"><code class="docutils literal notranslate"><span class="pre">DataSplit._make()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.DataSplit._replace"><code class="docutils literal notranslate"><span class="pre">DataSplit._replace()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.DataSplit.train_correlation_matrix_df"><code class="docutils literal notranslate"><span class="pre">DataSplit.train_correlation_matrix_df</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.DataSplit.train_data_outer_cv_df"><code class="docutils literal notranslate"><span class="pre">DataSplit.train_data_outer_cv_df</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.DataSplit.validation_df"><code class="docutils literal notranslate"><span class="pre">DataSplit.validation_df</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.PreprocessedData"><code class="docutils literal notranslate"><span class="pre">PreprocessedData</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.PreprocessedData.__eq__"><code class="docutils literal notranslate"><span class="pre">PreprocessedData.__eq__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.PreprocessedData.__hash__"><code class="docutils literal notranslate"><span class="pre">PreprocessedData.__hash__</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.PreprocessedData.__repr__"><code class="docutils literal notranslate"><span class="pre">PreprocessedData.__repr__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit"><code class="docutils literal notranslate"><span class="pre">TrainTestSplit</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit.__getnewargs__"><code class="docutils literal notranslate"><span class="pre">TrainTestSplit.__getnewargs__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit.__new__"><code class="docutils literal notranslate"><span class="pre">TrainTestSplit.__new__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit.__repr__"><code class="docutils literal notranslate"><span class="pre">TrainTestSplit.__repr__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit._asdict"><code class="docutils literal notranslate"><span class="pre">TrainTestSplit._asdict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit._make"><code class="docutils literal notranslate"><span class="pre">TrainTestSplit._make()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit._replace"><code class="docutils literal notranslate"><span class="pre">TrainTestSplit._replace()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit.test_np"><code class="docutils literal notranslate"><span class="pre">TrainTestSplit.test_np</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit.train_np"><code class="docutils literal notranslate"><span class="pre">TrainTestSplit.train_np</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ensemble_feature_selection_benchmark.store_experiments.pickle_data"><code class="docutils literal notranslate"><span class="pre">pickle_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ensemble_feature_selection_benchmark.store_experiments.save_duration_and_power_consumption"><code class="docutils literal notranslate"><span class="pre">save_duration_and_power_consumption()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ensemble_feature_selection_benchmark.store_experiments.save_experiment_in_mongodb"><code class="docutils literal notranslate"><span class="pre">save_experiment_in_mongodb()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ensemble_feature_selection_benchmark.store_experiments.save_raw_selection_result_per_method"><code class="docutils literal notranslate"><span class="pre">save_raw_selection_result_per_method()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/sigrun-may/ensemble-feature-selection-benchmark/blob/main/LICENSE">License</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/sigrun-may/ensemble-feature-selection-benchmark">GitHub Repository</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ensemble_feature_selection_benchmark</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../code-doc.html">Code Documentation</a></li>
+      <li class="breadcrumb-item active"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ensemble_feature_selection_benchmark</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/sigrun-may/ensemble-feature-selection-benchmark/blob/main/docs/source/code-doc/main.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-ensemble_feature_selection_benchmark.check_feature_selection_result">
+<span id="ensemble-feature-selection-benchmark"></span><span id="ensemble-feature-selection-benchmark-code-doc"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">ensemble_feature_selection_benchmark</span></code><a class="headerlink" href="#module-ensemble_feature_selection_benchmark.check_feature_selection_result" title="Permalink to this heading"></a></h1>
+<p>Verify that data has the correct structure and content.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.check_feature_selection_result.check_feature_selection_result_outer_cv">
+<span class="sig-prename descclassname"><span class="pre">ensemble_feature_selection_benchmark.check_feature_selection_result.</span></span><span class="sig-name descname"><span class="pre">check_feature_selection_result_outer_cv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature_selection_result_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_selection_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ensemble_feature_selection_benchmark/check_feature_selection_result.html#check_feature_selection_result_outer_cv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ensemble_feature_selection_benchmark.check_feature_selection_result.check_feature_selection_result_outer_cv" title="Permalink to this definition"></a></dt>
+<dd><p>Check structure and data types of feature selection result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>feature_selection_result_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><em>List</em></a>) – List with all selection results for each iteration of the outer cross-validation.</p></li>
+<li><p><strong>feature_selection_method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Feature selection method name.</p></li>
+<li><p><strong>settings</strong> – Project settings (dict or dynaconf object).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.check_feature_selection_result.check_raw_feature_selection_result_dict">
+<span class="sig-prename descclassname"><span class="pre">ensemble_feature_selection_benchmark.check_feature_selection_result.</span></span><span class="sig-name descname"><span class="pre">check_raw_feature_selection_result_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_feature_selection_result_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ensemble_feature_selection_benchmark/check_feature_selection_result.html#check_raw_feature_selection_result_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ensemble_feature_selection_benchmark.check_feature_selection_result.check_raw_feature_selection_result_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Check structure and data types of all feature selection results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raw_feature_selection_result_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – Dict with all selection results of all feature selection methods.</p></li>
+<li><p><strong>cross-validation.</strong> (<em>Each selection results includes a list</em><em> of </em><em>results for each iteration</em><em> of </em><em>each outer</em>) – </p></li>
+<li><p><strong>settings</strong> – Project settings (dict or dynaconf object).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-ensemble_feature_selection_benchmark.data_types"></span><p>Data types for preprocessed input data.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.DataSplit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ensemble_feature_selection_benchmark.data_types.</span></span><span class="sig-name descname"><span class="pre">DataSplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_data_outer_cv_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_correlation_matrix_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.DataSplit" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+<p>Create new instance of DataSplit(train_data_outer_cv_df, validation_df, train_correlation_matrix_df)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.DataSplit.__getnewargs__">
+<span class="sig-name descname"><span class="pre">__getnewargs__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.DataSplit.__getnewargs__" title="Permalink to this definition"></a></dt>
+<dd><p>Return self as a plain tuple.  Used by copy and pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.DataSplit.__new__">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data_outer_cv_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_correlation_matrix_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.DataSplit.__new__" title="Permalink to this definition"></a></dt>
+<dd><p>Create new instance of DataSplit(train_data_outer_cv_df, validation_df, train_correlation_matrix_df)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.DataSplit.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.DataSplit.__repr__" title="Permalink to this definition"></a></dt>
+<dd><p>Return a nicely formatted representation string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.DataSplit._asdict">
+<span class="sig-name descname"><span class="pre">_asdict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.DataSplit._asdict" title="Permalink to this definition"></a></dt>
+<dd><p>Return a new dict which maps field names to their values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.DataSplit._make">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_make</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.DataSplit._make" title="Permalink to this definition"></a></dt>
+<dd><p>Make a new DataSplit object from a sequence or iterable</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.DataSplit._replace">
+<span class="sig-name descname"><span class="pre">_replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.DataSplit._replace" title="Permalink to this definition"></a></dt>
+<dd><p>Return a new DataSplit object replacing specified fields with new values</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.DataSplit.train_correlation_matrix_df">
+<span class="sig-name descname"><span class="pre">train_correlation_matrix_df</span></span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.DataSplit.train_correlation_matrix_df" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.DataSplit.train_data_outer_cv_df">
+<span class="sig-name descname"><span class="pre">train_data_outer_cv_df</span></span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.DataSplit.train_data_outer_cv_df" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.DataSplit.validation_df">
+<span class="sig-name descname"><span class="pre">validation_df</span></span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.DataSplit.validation_df" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.PreprocessedData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ensemble_feature_selection_benchmark.data_types.</span></span><span class="sig-name descname"><span class="pre">PreprocessedData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inner_preprocessed_data_splits_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outer_preprocessed_data_splits</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ensemble_feature_selection_benchmark/data_types.html#PreprocessedData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.PreprocessedData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class to hold the complete preprocessed data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inner_preprocessed_data_splits_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><em>List</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><em>List</em></a><em>[</em><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.DataSplit" title="ensemble_feature_selection_benchmark.data_types.DataSplit"><em>DataSplit</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>outer_preprocessed_data_splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><em>List</em></a><em>[</em><a class="reference internal" href="#ensemble_feature_selection_benchmark.data_types.DataSplit" title="ensemble_feature_selection_benchmark.data_types.DataSplit"><em>DataSplit</em></a><em>]</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.PreprocessedData.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ensemble_feature_selection_benchmark/data_types.html#PreprocessedData.__eq__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.PreprocessedData.__eq__" title="Permalink to this definition"></a></dt>
+<dd><p>Return self==value.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.PreprocessedData.__hash__">
+<span class="sig-name descname"><span class="pre">__hash__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.PreprocessedData.__hash__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.PreprocessedData.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.PreprocessedData.__repr__" title="Permalink to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.TrainTestSplit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ensemble_feature_selection_benchmark.data_types.</span></span><span class="sig-name descname"><span class="pre">TrainTestSplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_np</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+<p>Create new instance of TrainTestSplit(train_np, test_np)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.TrainTestSplit.__getnewargs__">
+<span class="sig-name descname"><span class="pre">__getnewargs__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit.__getnewargs__" title="Permalink to this definition"></a></dt>
+<dd><p>Return self as a plain tuple.  Used by copy and pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.TrainTestSplit.__new__">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_np</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit.__new__" title="Permalink to this definition"></a></dt>
+<dd><p>Create new instance of TrainTestSplit(train_np, test_np)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.TrainTestSplit.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit.__repr__" title="Permalink to this definition"></a></dt>
+<dd><p>Return a nicely formatted representation string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.TrainTestSplit._asdict">
+<span class="sig-name descname"><span class="pre">_asdict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit._asdict" title="Permalink to this definition"></a></dt>
+<dd><p>Return a new dict which maps field names to their values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.TrainTestSplit._make">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_make</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit._make" title="Permalink to this definition"></a></dt>
+<dd><p>Make a new TrainTestSplit object from a sequence or iterable</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.TrainTestSplit._replace">
+<span class="sig-name descname"><span class="pre">_replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit._replace" title="Permalink to this definition"></a></dt>
+<dd><p>Return a new TrainTestSplit object replacing specified fields with new values</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.TrainTestSplit.test_np">
+<span class="sig-name descname"><span class="pre">test_np</span></span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit.test_np" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.data_types.TrainTestSplit.train_np">
+<span class="sig-name descname"><span class="pre">train_np</span></span><a class="headerlink" href="#ensemble_feature_selection_benchmark.data_types.TrainTestSplit.train_np" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-ensemble_feature_selection_benchmark.store_experiments"></span><p>Store experiment results.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.store_experiments.pickle_data">
+<span class="sig-prename descclassname"><span class="pre">ensemble_feature_selection_benchmark.store_experiments.</span></span><span class="sig-name descname"><span class="pre">pickle_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ensemble_feature_selection_benchmark/store_experiments.html#pickle_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ensemble_feature_selection_benchmark.store_experiments.pickle_data" title="Permalink to this definition"></a></dt>
+<dd><p>TODO</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – TODO</p></li>
+<li><p><strong>path</strong> – TODO</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>TODO</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.store_experiments.save_duration_and_power_consumption">
+<span class="sig-prename descclassname"><span class="pre">ensemble_feature_selection_benchmark.store_experiments.</span></span><span class="sig-name descname"><span class="pre">save_duration_and_power_consumption</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">benchmark_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ensemble_feature_selection_benchmark/store_experiments.html#save_duration_and_power_consumption"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ensemble_feature_selection_benchmark.store_experiments.save_duration_and_power_consumption" title="Permalink to this definition"></a></dt>
+<dd><p>TODO</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>settings</strong> – TODO</p></li>
+<li><p><strong>benchmark_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em> | </em><em>None</em>) – TODO</p></li>
+<li><p><strong>element</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – TODO</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>TODO</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.store_experiments.save_experiment_in_mongodb">
+<span class="sig-prename descclassname"><span class="pre">ensemble_feature_selection_benchmark.store_experiments.</span></span><span class="sig-name descname"><span class="pre">save_experiment_in_mongodb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mongo_client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">document_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ensemble_feature_selection_benchmark/store_experiments.html#save_experiment_in_mongodb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ensemble_feature_selection_benchmark.store_experiments.save_experiment_in_mongodb" title="Permalink to this definition"></a></dt>
+<dd><p>TODO</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mongo_client</strong> – TODO</p></li>
+<li><p><strong>document_dict</strong> – TODO</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>TODO</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ensemble_feature_selection_benchmark.store_experiments.save_raw_selection_result_per_method">
+<span class="sig-prename descclassname"><span class="pre">ensemble_feature_selection_benchmark.store_experiments.</span></span><span class="sig-name descname"><span class="pre">save_raw_selection_result_per_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selection_result_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_selection_method_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ensemble_feature_selection_benchmark/store_experiments.html#save_raw_selection_result_per_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ensemble_feature_selection_benchmark.store_experiments.save_raw_selection_result_per_method" title="Permalink to this definition"></a></dt>
+<dd><p>TODO</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selection_result_list</strong> – </p></li>
+<li><p><strong>feature_selection_method_name</strong> – </p></li>
+<li><p><strong>settings</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>TODO</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../code-doc.html" class="btn btn-neutral float-left" title="Code Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023 Sigrun May, Ostfalia Hochschule für angewandte Wissenschaften.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
