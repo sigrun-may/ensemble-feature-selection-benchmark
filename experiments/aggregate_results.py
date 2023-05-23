@@ -14,7 +14,7 @@ from config import settings
 
 # SETTINGS must have TESTING = TRUE!!!!
 
-experiment_id = 2
+experiment_id = 1
 if settings.env == "local":
     (
         raw_feature_selection_result,

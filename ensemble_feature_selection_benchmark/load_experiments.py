@@ -130,6 +130,7 @@ def _load_raw_selection_results_from_mongodb(experiment_id, mongo_db_url):
         )
     assert len(meta_data) > 0
     assert isinstance(meta_data, dict)
+    pprint(meta_data)
 
     # load stored data
     result_per_method = {}
