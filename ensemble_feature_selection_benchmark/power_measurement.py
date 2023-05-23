@@ -88,8 +88,8 @@ def initialize_benchmark_dict():
     # initialize dict for power measurement
     benchmark_dict = {}
     for node_id in settings["nodes"]["baseBoardIds"]:
-        benchmark_dict[f"{node_id}_node"] = 0
-        benchmark_dict[f"{node_id}_peg"] = 0
+        benchmark_dict[f"node{node_id}"] = 0
+        benchmark_dict[f"node{node_id}_peg"] = 0
     benchmark_dict["time"] = datetime.now()
     assert type(benchmark_dict["time"]) == datetime
     return benchmark_dict
