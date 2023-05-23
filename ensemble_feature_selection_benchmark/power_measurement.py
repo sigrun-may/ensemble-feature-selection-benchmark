@@ -32,9 +32,9 @@ def _get_actual_node_power_usage(node_power_usages_dict: dict):
                 base_board_id_str = node["@baseBoardId"][
                     node["@baseBoardId"].find(start := "_BB_") + len(start)
                 ]
-                node_id = f"{base_board_id_str}"
+                node_id = f"node{base_board_id_str}"
                 if node_id in node_power_usages_dict.keys():
-                    node_power_usages_dict[f"{node_id}_node"] += float(
+                    node_power_usages_dict[node_id] += float(
                         node["@actualNodePowerUsage"]
                     )
                     node_power_usages_dict[f"{node_id}_peg"] += float(
@@ -47,9 +47,9 @@ def _get_actual_node_power_usage(node_power_usages_dict: dict):
     else:
         # local testing
         for node in settings["nodes"]["baseBoardIds"]:
-            node_id = f"{str(node)}"
+            node_id = f"node{str(node)}"
             if node_id in node_power_usages_dict.keys():
-                node_power_usages_dict[f"{node_id}_node"] += 1
+                node_power_usages_dict[node_id] += 1
                 node_power_usages_dict[f"{node_id}_peg"] += 1
         return node_power_usages_dict
 
