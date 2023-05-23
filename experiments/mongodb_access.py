@@ -13,7 +13,7 @@ loaded_experiment_data = {}
 counter = 1
 while loaded_experiment_data is not None:
     loaded_experiment_data = load_experiments._load_meta_data_from_mongodb(
-        experiment_id=counter, mongo_db_url=settings["mongodb_url"]
+        experiment_id=counter, mongo_db_url=settings["mongo_db_url"]
     )
     pprint(loaded_experiment_data)
     counter += 1
