@@ -26,7 +26,7 @@ def _calculate_local_experiment_id(cwd_path):
     return highest_experiment_id + 1
 
 
-def _save_meta_data_in_mongodb(settings, cwd_path, commit_sha):
+def _save_meta_data_in_mongodb(settings, commit_sha):
     MONGODB_URL = settings.mongo_db_url
     client = MongoClient(MONGODB_URL)
     db = client.admin
@@ -43,13 +43,13 @@ def _save_meta_data_in_mongodb(settings, cwd_path, commit_sha):
     experiment_id = max_id + 1
 
     # create experiment
-    experiment_meta_data = toml.load([f"{cwd_path}/settings.toml"], _dict=dict)
+    experiment_meta_data = toml.load([f"{settings['cwd_path']}/settings.toml"], _dict=dict)
     experiment_meta_data.update(
         {
             "experiment_id": experiment_id,
             "date": datetime.utcnow(),
             "git_commit": commit_sha,
-            "cwd_path": cwd_path,
+            "cwd_path": settings['cwd_path'],
         }
     )
     mongodb_id = meta_data_collection.insert_one(
@@ -77,12 +77,10 @@ def post(settings):
     commit_sha = git_repository.head.object.hexsha
     if settings.env == "cluster":
         print("settings.env", settings.env)
-        # TODO hide path
-        cwd_path = "/data/storage/smay/dev/ensemble-feature-selection-benchmark2"
-        data["cwd_path"] = cwd_path
+        cwd_path = settings['cwd_path']
         if not settings.testing:
             mongodb_id, experiment_id = _save_meta_data_in_mongodb(
-                settings, cwd_path, commit_sha
+                settings, commit_sha
             )
             data["experiment_id"] = experiment_id
             data["mongodb_id"] = mongodb_id
@@ -108,12 +106,12 @@ def post(settings):
     data[
         "path_yeo_johnson_module"
     ] = f"{cwd_path}{settings['preprocessing']['path_yeo_johnson_module']}".replace(
-        "ensemble-feature-selection-benchmark2", ""
+        "ensemble-feature-selection-benchmark", ""
     )
     data[
         "path_yeo_johnson_c_library"
     ] = f"{cwd_path}{settings['preprocessing']['path_yeo_johnson_c_library']}".replace(
-        "ensemble-feature-selection-benchmark2", ""
+        "ensemble-feature-selection-benchmark", ""
     )
     print("Return from hook")
     return data
