@@ -40,6 +40,7 @@ def _get_actual_node_power_usage(node_power_usages_dict: dict):
                     node_power_usages_dict[f"{node_id}_peg"] += float(
                         node["@actualPEGPowerUsage"]
                     )
+            print(node_power_usages_dict)
             return node_power_usages_dict
         else:
             raise ValueError("Could not establish connection.")

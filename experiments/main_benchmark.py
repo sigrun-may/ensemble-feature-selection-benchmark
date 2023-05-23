@@ -97,7 +97,6 @@ def run_experiment():
     print(f"finished workflow in {datetime.utcnow() - start_time_workflow}")
 
 
-
 def benchmark(workflow_element, start_time_workflow, data=None):
     print(f"Start {workflow_element}")
     # start time and power measurement
@@ -125,6 +124,7 @@ def benchmark(workflow_element, start_time_workflow, data=None):
     assert not preprocessing_power_measurement_thread.is_alive()
     workflow_duration = datetime.utcnow() - start_time_workflow
     benchmark_dict["workflow_duration"] = workflow_duration.total_seconds()
+    print(benchmark_dict)
     store_experiments.save_duration_and_power_consumption(
         settings=settings, benchmark_dict=benchmark_dict, element=workflow_element
     )
