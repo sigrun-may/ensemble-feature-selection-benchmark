@@ -7,6 +7,7 @@
 from datetime import datetime
 
 import time
+from pprint import pprint
 
 import requests
 import xmltodict
@@ -29,6 +30,7 @@ def _get_actual_node_power_usage(node_power_usages_dict: dict):
             xml_data = api_response.text
             data_as_dict = xmltodict.parse(xml_data)
             for node in data_as_dict["nodeList"]["node"]:
+                pprint(node)
                 base_board_id_str = node["@baseBoardId"][
                     node["@baseBoardId"].find(start := "_BB_") + len(start)
                 ]
