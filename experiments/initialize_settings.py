@@ -4,13 +4,14 @@
 
 import tomlkit
 
-file_name = "../ensemble-feature-selection-benchmark2/settings.toml"
+file_name = "../ensemble-feature-selection-benchmark/settings.toml"
 
 
 def serial_init():
     # serial
     with open(file_name, mode="rt", encoding="utf-8") as fp:
         config_toml_file = tomlkit.load(fp)
+    config_toml_file["testing"] = False
     config_toml_file["parallel_processes"]["init_ray"] = False
     config_toml_file["parallel_processes"]["hpo_reverse"] = 1
     config_toml_file["parallel_processes"]["hpo_standard"] = 1
