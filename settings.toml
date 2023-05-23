@@ -1,5 +1,5 @@
-# testing = true
-testing = false
+testing = true
+# testing = false
 
 # set in .secrets.toml (see dynaconf documentation)
 # .secrets.toml must be located in the same directory as this settings.toml
