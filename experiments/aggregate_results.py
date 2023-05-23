@@ -34,7 +34,7 @@ else:
         "No valid environment found in settings. Set environment to 'local' or 'cluster'."
     )
 feature_selection_result_per_method = result.get_feature_selection_results_per_method(
-    raw_feature_selection_result, stored_settings
+    raw_feature_selection_result, settings
 )
 aggregated_data = aggregate_selections(
     feature_selection_result_per_method, experiment_id
