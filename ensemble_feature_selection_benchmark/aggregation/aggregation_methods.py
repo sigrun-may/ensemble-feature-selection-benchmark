@@ -26,23 +26,23 @@ _logger = logging.getLogger(__name__)
 def str_to_class(class_name):
     """Instantiate object from given class name string.
 
-        Args:
-            class_name: Name of class to instantiate.
+    Args:
+        class_name: Name of class to instantiate.
 
-        Returns:
-            Object of type class_name.
+    Returns:
+        Object of type class_name.
 
-        """
+    """
     return getattr(sys.modules[__name__], class_name)
 
 
 class AggregationBaseClass(ABC):
     """Base class for aggregation methods"""
+
     @staticmethod
     @abstractmethod
     def aggregate(data: pd.DataFrame) -> pd.DataFrame:
-
-        """ Aggregate the results of the single feature selection.
+        """Aggregate the results of the single feature selection.
 
         Args:
             data: results of feature selection methods
@@ -57,10 +57,10 @@ class AggregationBaseClass(ABC):
 
 class Sum(AggregationBaseClass):
     """Sum feature selection results"""
+
     @staticmethod
     def aggregate(data: pd.DataFrame) -> pd.DataFrame:
-
-        """ Calculate sum the results of the feature selection methods.
+        """Calculate sum the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -75,10 +75,10 @@ class Sum(AggregationBaseClass):
 
 class SumRanked(AggregationBaseClass):
     """Feature ranking by sum of the results of feature selection methods"""
+
     @staticmethod
     def aggregate(data: pd.DataFrame) -> pd.DataFrame:
-
-        """ Calculate the feature rankings by the sum of the feature selection methods.
+        """Calculate the feature rankings by the sum of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -93,10 +93,10 @@ class SumRanked(AggregationBaseClass):
 
 class ArithmeticMean(AggregationBaseClass):
     """Arithmetic mean of feature selection methods."""
+
     @staticmethod
     def aggregate(data: pd.DataFrame) -> pd.DataFrame:
-
-        """ Calculate the arithmetic mean of the results of the feature selection methods.
+        """Calculate the arithmetic mean of the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -111,10 +111,10 @@ class ArithmeticMean(AggregationBaseClass):
 
 class ArithmeticMeanRanked(AggregationBaseClass):
     """Feautre ranking of arithmetic mean of the results of feature selection methods."""
+
     @staticmethod
     def aggregate(data: pd.DataFrame) -> pd.DataFrame:
-
-        """ Calculate the feature rankings by the arithmetic mean of the results of the feature selection methods.
+        """Calculate the feature rankings by the arithmetic mean of the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -134,10 +134,10 @@ class ArithmeticMeanRanked(AggregationBaseClass):
 
 class GeometricMean(AggregationBaseClass):  # use only on ranked input datasets!
     """Geometric mean of ranked feature selection results"""
+
     @staticmethod
     def aggregate(data: pd.DataFrame, **kwargs) -> pd.DataFrame:
-
-        """ Calculate the geometric mean of the ranking results of feature selection methods.
+        """Calculate the geometric mean of the ranking results of feature selection methods.
 
         Args:
             data: ranking results of feature selection methods
@@ -152,10 +152,10 @@ class GeometricMean(AggregationBaseClass):  # use only on ranked input datasets!
 
 class GeometricMeanRanked(AggregationBaseClass):  # use only on ranked input datasets!
     """Feautre ranking of geometric mean of ranked feature selection results"""
+
     @staticmethod
     def aggregate(data: pd.DataFrame, **kwargs) -> pd.DataFrame:
-
-        """ Calculate the feature rankings by the geometric mean of the results of feature selection methods.
+        """Calculate the feature rankings by the geometric mean of the results of feature selection methods.
 
         Args:
             data: ranking results of feature selection methods
@@ -170,10 +170,10 @@ class GeometricMeanRanked(AggregationBaseClass):  # use only on ranked input dat
 
 class Median(AggregationBaseClass):
     """Median of feature selection results."""
+
     @staticmethod
     def aggregate(data: pd.DataFrame, **kwargs) -> pd.DataFrame:
-
-        """ Calculate the median of the results of the feature selection methods.
+        """Calculate the median of the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -188,10 +188,10 @@ class Median(AggregationBaseClass):
 
 class MedianRanked(AggregationBaseClass):
     """Feature ranking of Median of feature selection results."""
+
     @staticmethod
     def aggregate(data: pd.DataFrame, **kwargs) -> pd.DataFrame:
-
-        """ Calculate the feature rankings by the median of the results of the feature selection methods.
+        """Calculate the feature rankings by the median of the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -211,10 +211,10 @@ class MedianRanked(AggregationBaseClass):
 
 class Count(AggregationBaseClass):
     """Count the number of times a feature is selected by the feature selection methods"""
+
     @staticmethod
     def aggregate(data: pd.DataFrame) -> pd.DataFrame:
-
-        """ Count the number of times a feature is selected by the feature selection
+        """Count the number of times a feature is selected by the feature selection
         methods. A feature is considered as selected, if the feature importance is not zero.
 
         Args:
@@ -231,10 +231,10 @@ class Count(AggregationBaseClass):
 
 class CountRanked(AggregationBaseClass):
     """Feature ranking by the count the number of times a feature is selected by the feature selection methods"""
+
     @staticmethod
     def aggregate(data: pd.DataFrame) -> pd.DataFrame:
-
-        """ Calculate feature ranking by the count the number of times a feature is selected by the feature selection
+        """Calculate feature ranking by the count the number of times a feature is selected by the feature selection
         methods. A feature is considered as selected, if the feature importance is not zero.
 
         Args:
@@ -252,10 +252,10 @@ class CountRanked(AggregationBaseClass):
 
 class Min(AggregationBaseClass):
     """Minimum of the results of the feature selection methods"""
+
     @staticmethod
     def aggregate(data: pd.DataFrame, **kwargs) -> pd.DataFrame:
-
-        """ Calculate the minimum of the results of the feature selection methods.
+        """Calculate the minimum of the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -270,10 +270,10 @@ class Min(AggregationBaseClass):
 
 class MinRanked(AggregationBaseClass):
     """Feature ranking by the minimum of the feature selection methods."""
+
     @staticmethod
     def aggregate(data: pd.DataFrame, **kwargs) -> pd.DataFrame:
-
-        """ Calculate the feature ranking by the minimum of the results of the feature selection methods.
+        """Calculate the feature ranking by the minimum of the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -293,10 +293,10 @@ class MinRanked(AggregationBaseClass):
 
 class Max(AggregationBaseClass):
     """Maximum of the feature selection results."""
+
     @staticmethod
     def aggregate(data: pd.DataFrame, **kwargs) -> pd.DataFrame:
-
-        """ Calculate the maximum of the results of the feature selection methods.
+        """Calculate the maximum of the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -311,10 +311,10 @@ class Max(AggregationBaseClass):
 
 class MaxRanked(AggregationBaseClass):
     """Feature rankings by the maximum of the feature selection methods"""
+
     @staticmethod
     def aggregate(data: pd.DataFrame, **kwargs) -> pd.DataFrame:
-
-        """ Calculate the feature rankings by the maximum of the results of the feature selection methods.
+        """Calculate the feature rankings by the maximum of the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -336,10 +336,10 @@ class WeightedAveraging(
     AggregationBaseClass
 ):  # needs a dataframe with an added row called "acc" that contains the accuracy of the pred.model
     """Weighted average of the results of the feature selection methods."""
+
     @staticmethod
     def aggregate(data: pd.DataFrame, **kwargs) -> pd.DataFrame:
-
-        """ Calculate the weighted average of the results of the feature selection methods. The weights are the
+        """Calculate the weighted average of the results of the feature selection methods. The weights are the
         accuracies of the prediction model.
 
         Args:
@@ -366,10 +366,10 @@ class WeightedAveraging(
 
 class WeightedAveragingRanked(AggregationBaseClass):
     """Feature rankings by the weighted average of the results of the feature selection methods."""
+
     @staticmethod
     def aggregate(data: pd.DataFrame, **kwargs) -> pd.DataFrame:
-
-        """ Calculate the feature rankings by the weighted average of the results of the feature selection methods.
+        """Calculate the feature rankings by the weighted average of the results of the feature selection methods.
         The weights are the accuracies of the prediction model.
 
         Args:
@@ -387,10 +387,10 @@ class WeightedAveragingRanked(AggregationBaseClass):
 
 class BordaCount(AggregationBaseClass):
     """Borda count of the results of the feautre selection methods"""
+
     @staticmethod
     def aggregate(data: pd.DataFrame) -> pd.DataFrame:
-
-        """ Calculate the borda count of the results of the feature selection methods.
+        """Calculate the borda count of the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -406,10 +406,10 @@ class BordaCount(AggregationBaseClass):
 
 class BordaCountRanked(AggregationBaseClass):
     """Feature ranking by the borda count of the results of the feature selection methods."""
+
     @staticmethod
     def aggregate(data: pd.DataFrame) -> pd.DataFrame:
-
-        """ Calculate the feature selection rankings by the borda count of the results of the feature selection methods.
+        """Calculate the feature selection rankings by the borda count of the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -425,10 +425,10 @@ class BordaCountRanked(AggregationBaseClass):
 
 class ReciprocalRanking(AggregationBaseClass):
     """Reciprocal ranking of results of feature selection methods."""
+
     @staticmethod
     def aggregate(data: pd.DataFrame) -> pd.DataFrame:
-
-        """ Calculate the reciprocal ranking of the results of the feature selection methods.
+        """Calculate the reciprocal ranking of the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods
@@ -448,10 +448,10 @@ class ReciprocalRanking(AggregationBaseClass):
 
 class ReciprocalRankingRanked(AggregationBaseClass):
     """Feature ranking by reciprocal ranking of the results of the feature selection methods."""
+
     @staticmethod
     def aggregate(data: pd.DataFrame) -> pd.DataFrame:
-
-        """ Calculate the feature rankings by the reciprocal ranking of the results of the feature selection methods.
+        """Calculate the feature rankings by the reciprocal ranking of the results of the feature selection methods.
 
         Args:
             data: results of feature selection methods

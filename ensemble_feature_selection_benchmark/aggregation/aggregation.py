@@ -37,7 +37,7 @@ def _aggregate_outer_cv(aggregation_method_cv: str, result_per_method_dict: dict
 
 
 def aggregate_selections(result_per_method_dict, experiment_id=None):
-    """ aggregate results of feature selection methods
+    """aggregate results of feature selection methods
 
     Args:
         result_per_method_dict: dictionary containing the results per selection method

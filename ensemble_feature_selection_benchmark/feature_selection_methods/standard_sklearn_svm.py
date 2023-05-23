@@ -15,6 +15,7 @@ from sklearn.svm import SVC
 
 _logger = logging.getLogger(__name__)
 
+
 def train_svm(train_df, parameters):
     # prepare train data
     y_train = train_df["label"].values
@@ -53,9 +54,9 @@ def calculate_score(data_inner_cv_iteration, parameters):
     # shap_list = []
     # # calculate shap values
     # explainer = shap.KernelExplainer(model.predict, train_data_outer_cv_df.loc[:, train_data_outer_cv_df.columns != "label"], link="identity")
-    explainer = shap.KernelExplainer(model.predict,
-                                     train_df.loc[:, train_df.columns != "label"],
-                                     link="identity")
+    explainer = shap.KernelExplainer(
+        model.predict, train_df.loc[:, train_df.columns != "label"], link="identity"
+    )
     # # TODO train oder validation
     shap_values = explainer.shap_values(x_validation, silent=True)
     # # shap_values = explainer(x_validation)

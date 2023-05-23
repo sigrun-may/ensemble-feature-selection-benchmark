@@ -64,7 +64,8 @@ def _evaluate_selection_result(
                 axis=0,
             )
     assert (
-        feature_weights_df.shape[0] == settings["data"]["number_of_features"] - 1 # exclude label
+        feature_weights_df.shape[0]
+        == settings["data"]["number_of_features"] - 1  # exclude label
     ), feature_weights_df.info(verbose=True)
     return feature_weights_df
 

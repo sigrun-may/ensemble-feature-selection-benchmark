@@ -43,13 +43,15 @@ def _save_meta_data_in_mongodb(settings, commit_sha):
     experiment_id = max_id + 1
 
     # create experiment
-    experiment_meta_data = toml.load([f"{settings['cwd_path']}/settings.toml"], _dict=dict)
+    experiment_meta_data = toml.load(
+        [f"{settings['cwd_path']}/settings.toml"], _dict=dict
+    )
     experiment_meta_data.update(
         {
             "experiment_id": experiment_id,
             "date": datetime.utcnow(),
             "git_commit": commit_sha,
-            "cwd_path": settings['cwd_path'],
+            "cwd_path": settings["cwd_path"],
         }
     )
     mongodb_id = meta_data_collection.insert_one(
@@ -77,11 +79,9 @@ def post(settings):
     commit_sha = git_repository.head.object.hexsha
     if settings.env == "cluster":
         print("settings.env", settings.env)
-        cwd_path = settings['cwd_path']
+        cwd_path = settings["cwd_path"]
         if not settings.testing:
-            mongodb_id, experiment_id = _save_meta_data_in_mongodb(
-                settings, commit_sha
-            )
+            mongodb_id, experiment_id = _save_meta_data_in_mongodb(settings, commit_sha)
             data["experiment_id"] = experiment_id
             data["mongodb_id"] = mongodb_id
     elif settings.env == "local":

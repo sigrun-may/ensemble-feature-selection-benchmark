@@ -35,13 +35,13 @@ if settings["preprocessing"]["yeo_johnson"] == "YeoJohnsonC":
 def str_to_class(class_name):
     """Instantiate object from given class name string.
 
-        Args:
-            class_name: Name of class to instantiate.
+    Args:
+        class_name: Name of class to instantiate.
 
-        Returns:
-            Object of type class_name.
+    Returns:
+        Object of type class_name.
 
-        """
+    """
     print(class_name)
     return getattr(sys.modules[__name__], class_name)
 
