@@ -104,15 +104,13 @@ def _load_meta_data_from_mongodb(experiment_id, mongo_db_url):
     loaded_experiment_data = experiments_meta_data.find_one(
         {"experiment_id": experiment_id}
     )
-
     if loaded_experiment_data is None:
         _logger.error(
             f"Experiment meta data from experiment {experiment_id} does not exist!"
         )
-    else:
-        # Close the connection to MongoDB when you're done.
-        client.close()
-        return loaded_experiment_data
+    # Close the connection to MongoDB when you're done.
+    client.close()
+    return loaded_experiment_data
 
 
 def _load_raw_selection_results_from_mongodb(experiment_id, mongo_db_url):
