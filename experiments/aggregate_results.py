@@ -4,6 +4,7 @@
 
 
 """Main program to aggregate ensemble feature selection results."""
+import tomlkit
 
 from ensemble_feature_selection_benchmark.aggregation import result
 from ensemble_feature_selection_benchmark.aggregation.aggregation import (
@@ -12,7 +13,6 @@ from ensemble_feature_selection_benchmark.aggregation.aggregation import (
 from ensemble_feature_selection_benchmark import load_experiments
 from config import settings
 
-# SETTINGS must have TESTING = TRUE!!!!
 
 experiment_id = 1
 if settings.env == "local":
@@ -33,6 +33,16 @@ else:
     raise ValueError(
         "No valid environment found in settings. Set environment to 'local' or 'cluster'."
     )
+
+# set testing to avoid starting a new experiment
+file_name = "../ensemble-feature-selection-benchmark/settings.toml"
+with open(file_name, mode="rt", encoding="utf-8") as fp:
+    config_toml_file = tomlkit.load(fp)
+config_toml_file["testing"] = True
+config_toml_file["parallel_processes"]["init_ray"] = False
+with open(file_name, mode="wt", encoding="utf-8") as fp:
+    tomlkit.dump(config_toml_file, fp)
+
 feature_selection_result_per_method = result.get_feature_selection_results_per_method(
     raw_feature_selection_result, stored_settings
 )
