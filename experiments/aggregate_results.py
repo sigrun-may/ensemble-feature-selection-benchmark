@@ -34,11 +34,11 @@ else:
         "No valid environment found in settings. Set environment to 'local' or 'cluster'."
     )
 
-# set testing to avoid starting a new experiment
+# disable data storage to avoid starting a new experiment
 file_name = "../ensemble-feature-selection-benchmark/settings.toml"
 with open(file_name, mode="rt", encoding="utf-8") as fp:
     config_toml_file = tomlkit.load(fp)
-config_toml_file["testing"] = True
+config_toml_file["store_result"] = False
 config_toml_file["parallel_processes"]["init_ray"] = False
 with open(file_name, mode="wt", encoding="utf-8") as fp:
     tomlkit.dump(config_toml_file, fp)

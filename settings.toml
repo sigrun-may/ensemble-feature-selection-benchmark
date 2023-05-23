@@ -1,9 +1,11 @@
-testing = true
-# testing = false
+store_result = true
+# store_result = false
 
 # set in .secrets.toml (see dynaconf documentation)
 # .secrets.toml must be located in the same directory as this settings.toml
 # env = "local" | "cluster"
+
+# in a cluster environment the current working directory must be set as cwd_path in .sectrets.toml
 
 # if env = "cluster" and if data is stored in mongodb set following additional parameter in .secrets.toml :
 # mongo_db_url = "mongodb://user:password@storage:12345/"

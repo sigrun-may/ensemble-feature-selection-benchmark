@@ -127,7 +127,7 @@ def save_raw_selection_result_per_method(
         selection_result_list, feature_selection_method_name, settings
     )
 
-    if not settings.testing:
+    if settings.store_result:
         # store data in mongodb
         if settings["env"] == "cluster":
             converted_raw_selection_result = (

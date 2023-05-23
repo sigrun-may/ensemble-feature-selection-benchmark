@@ -11,7 +11,7 @@ def serial_init():
     # serial
     with open(file_name, mode="rt", encoding="utf-8") as fp:
         config_toml_file = tomlkit.load(fp)
-    config_toml_file["testing"] = False
+    config_toml_file["store_result"] = True
     config_toml_file["parallel_processes"]["init_ray"] = False
     config_toml_file["parallel_processes"]["hpo_reverse"] = 1
     config_toml_file["parallel_processes"]["hpo_standard"] = 1

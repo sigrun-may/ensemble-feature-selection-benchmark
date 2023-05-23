@@ -80,14 +80,14 @@ def post(settings):
     if settings.env == "cluster":
         print("settings.env", settings.env)
         cwd_path = settings["cwd_path"]
-        if not settings.testing:
+        if settings.store_result:
             mongodb_id, experiment_id = _save_meta_data_in_mongodb(settings, commit_sha)
             data["experiment_id"] = experiment_id
             data["mongodb_id"] = mongodb_id
     elif settings.env == "local":
         cwd_path = os.path.dirname(os.path.realpath(__file__))
         data["cwd_path"] = cwd_path
-        if not settings.testing:
+        if settings.store_result:
             experiment_id = _calculate_local_experiment_id(cwd_path)
             data["experiment_id"] = experiment_id
             data["git_commit"] = commit_sha
