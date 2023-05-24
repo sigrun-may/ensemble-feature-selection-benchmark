@@ -30,6 +30,8 @@ gitpython
 pref_voting
 numpy==1.23.5
 numba==0.56.4
+sphinx
+sphinxcontrib-napoleon  # google docstring style
 # celer
 # relaxed_lasso_continental
 # cv_pruner

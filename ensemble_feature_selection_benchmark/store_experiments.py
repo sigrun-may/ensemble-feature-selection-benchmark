@@ -112,14 +112,12 @@ def _get_results_from_ray(selection_result_list):
 def save_raw_selection_result_per_method(
     selection_result_list, feature_selection_method_name, settings
 ):
-    """TODO
+    """Save feature selection result for the given feature selection method.
 
     Args:
-        selection_result_list:
-        feature_selection_method_name:
-        settings:
-    Returns:
-        TODO
+        selection_result_list: List including results for each outer cross-validation iteration.
+        feature_selection_method_name: Embedded feature selection method.
+        settings: Settings.
 
     """
     selection_result_list = _get_results_from_ray(selection_result_list)
