@@ -43,7 +43,7 @@ def _get_actual_node_power_usage(node_power_usages_dict: dict):
                     )
             return node_power_usages_dict
         else:
-            raise ValueError("Could not establish connection.")
+            node_power_usages_dict["error"] += 1
     else:
         # local testing
         for node in settings["nodes"]["baseBoardIds"]:
@@ -90,6 +90,7 @@ def initialize_benchmark_dict():
     for node_id in settings["nodes"]["baseBoardIds"]:
         benchmark_dict[f"node{node_id}"] = 0
         benchmark_dict[f"node{node_id}_peg"] = 0
+        benchmark_dict["error"] = 0
     benchmark_dict["time"] = datetime.now()
     assert type(benchmark_dict["time"]) == datetime
     return benchmark_dict
