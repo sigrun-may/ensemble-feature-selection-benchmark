@@ -128,8 +128,10 @@ def check_raw_feature_selection_result_dict(
     assert (
         len(raw_feature_selection_result_dict)
         == len(settings["selection_method"]["methods"]) + 1
-    ), f"{raw_feature_selection_result_dict}, len(settings['selection_method']['methods']) + 1: " \
-       f"{len(settings['selection_method']['methods']) + 1}"
+    ), (
+        f"{raw_feature_selection_result_dict}, len(settings['selection_method']['methods']) + 1: "
+        f"{len(settings['selection_method']['methods']) + 1}"
+    )
     for key, value in raw_feature_selection_result_dict.items():
         assert isinstance(value, List), f"{value}{type(value)}"
         if key == "feature_names":
