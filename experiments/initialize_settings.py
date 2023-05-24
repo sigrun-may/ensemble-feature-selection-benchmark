@@ -28,3 +28,15 @@ def serial_init():
     config_toml_file["parallel_processes"]["tree_learner"] = "serial"
     with open(file_name, mode="wt", encoding="utf-8") as fp:
         tomlkit.dump(config_toml_file, fp)
+
+
+def init_aggregation():
+    # disable data storage to avoid starting a new experiment
+    with open(file_name, mode="rt", encoding="utf-8") as fp:
+        config_toml_file = tomlkit.load(fp)
+    config_toml_file["store_result"] = False
+    config_toml_file["parallel_processes"]["init_ray"] = False
+    # adapt number of features
+
+    with open(file_name, mode="wt", encoding="utf-8") as fp:
+        tomlkit.dump(config_toml_file, fp)
