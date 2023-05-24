@@ -129,7 +129,7 @@ n_trials = 2
 pruning_threshold = 0.1
 
 [LightgbmOptuna]
-n_trials = 10
+n_trials = 100
 pruning_threshold = 0.1
 
 [ReverseLassoSklearn]
