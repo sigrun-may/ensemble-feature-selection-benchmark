@@ -147,6 +147,12 @@ class PandasPearsonCorrelation(CorrelationMatrixCalculatorBaseClass):
         return data_df.iloc[:, 1:].corr(method="pearson")
 
 
+class PandasSpearmanCorrelation(CorrelationMatrixCalculatorBaseClass):
+    @staticmethod
+    def calculate_correlation_matrix(data_df: pd.DataFrame) -> pd.DataFrame:
+        return data_df.iloc[:, 1:].corr(method="spearman")
+
+
 class PreprocessingSerial(PreprocessingBaseClass):
     power_transformer = None
     correlation_matrix_calculator = None
@@ -310,36 +316,50 @@ class YeoJohnsonC(PowerTransformerBaseClass):
         )
 
 
-def adapt_data_shape(data_df: pd.DataFrame) -> pd.DataFrame:
-    # adapt the data shape
-    if settings["data"]["number_of_features"] < data_df.shape[1]:
-        data_df = data_df.iloc[:, : settings["data"]["number_of_features"]]
-        assert len(data_df.columns) == settings["data"]["number_of_features"]
-    if settings["data"]["number_of_samples"] < data_df.shape[0]:
-        data_df = data_df.iloc[: settings["data"]["number_of_samples"], :]
-        assert len(data_df.shape[0]) == settings["data"]["number_of_samples"]
-    print("adapted data shape:", data_df.shape)
-    return data_df
-
-
 def prepare_data(data_df: pd.DataFrame) -> pd.DataFrame:
     # check for missing values
     assert not data_df.isnull().values.any(), "Missing values" + data_df.head()
 
+    if settings.data.remove_perfect_separated_features:
+        data_df = remove_perfectly_separated_features(data_df)
     # adapt the data shape
-    adapted_data_df = adapt_data_shape(data_df)
+    if settings["data"]["number_of_features"] < data_df.shape[1]:
+        data_df = data_df.iloc[:, : settings["data"]["number_of_features"]]
+        assert len(data_df.columns) == settings["data"]["number_of_features"]
+    return data_df
 
-    #  TODO check for perfectly separated features...
 
-    return adapted_data_df
+def remove_perfectly_separated_features(data_df):
+    list_of_separated_features = []
+    for col_name, data in data_df.items():
+        if col_name == "label":
+            continue
+
+        tmp_0 = []
+        tmp_1 = []
+        label = data_df["label"]
+        for i in range(len(data)):
+            if label[i] == settings.data.pos_label:
+                tmp_0.append(data[i])
+            else:
+                tmp_1.append(data[i])
+        assert len(tmp_1) > 0
+        assert len(tmp_0) > 0
+        if min(tmp_1) > max(tmp_0) or min(tmp_0) > max(tmp_1):
+            list_of_separated_features.append(col_name)
+
+    print(
+        "Following perfect separated features are excluded from further feature selection:"
+    )
+    print(list_of_separated_features)
+
+    # remove perfect features
+    data_df.drop(list_of_separated_features, inplace=True, axis=1)
+    print("New data shape: ", data_df.shape)
+    return data_df
 
 
 def preprocess_data() -> PreprocessedData:
-    # load pickled preprocessed data
-    # # preprocessed_data_id: PreprocessedData|None = load_preprocessed_data()
-    # if preprocessed_data_id:
-    #     return preprocessed_data_id
-
     # load data
     input_data_path = f"{settings['cwd_path']}/{settings['data']['folder']}/{settings['data']['name']}/{settings['data']['name']}.csv"
     data_df = pd.read_csv(input_data_path)
@@ -350,7 +370,6 @@ def preprocess_data() -> PreprocessedData:
     data_df = prepare_data(data_df)
 
     if not settings["preprocessing"]["scale_and_power_transform"]:
-        #  TODO daten umkopieren aber nicht verarbeiten
         preprocessor = str_to_class(
             settings["preprocessing"]["preprocessing_parallel"]
         )(
