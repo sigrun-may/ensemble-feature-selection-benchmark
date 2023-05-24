@@ -14,7 +14,7 @@ from ensemble_feature_selection_benchmark import load_experiments
 from config import settings
 
 
-experiment_id = 1
+experiment_id = 2
 if settings.env == "local":
     (
         raw_feature_selection_result,
@@ -33,15 +33,6 @@ else:
     raise ValueError(
         "No valid environment found in settings. Set environment to 'local' or 'cluster'."
     )
-
-# disable data storage to avoid starting a new experiment
-file_name = "../ensemble-feature-selection-benchmark/settings.toml"
-with open(file_name, mode="rt", encoding="utf-8") as fp:
-    config_toml_file = tomlkit.load(fp)
-config_toml_file["store_result"] = False
-config_toml_file["parallel_processes"]["init_ray"] = False
-with open(file_name, mode="wt", encoding="utf-8") as fp:
-    tomlkit.dump(config_toml_file, fp)
 
 feature_selection_result_per_method = result.get_feature_selection_results_per_method(
     raw_feature_selection_result, stored_settings
