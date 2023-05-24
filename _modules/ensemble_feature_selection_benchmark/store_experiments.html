@@ -188,14 +188,12 @@
 <div class="viewcode-block" id="save_raw_selection_result_per_method"><a class="viewcode-back" href="../../code-doc/main.html#ensemble_feature_selection_benchmark.store_experiments.save_raw_selection_result_per_method">[docs]</a><span class="k">def</span> <span class="nf">save_raw_selection_result_per_method</span><span class="p">(</span>
     <span class="n">selection_result_list</span><span class="p">,</span> <span class="n">feature_selection_method_name</span><span class="p">,</span> <span class="n">settings</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;TODO</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save feature selection result for the given feature selection method.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        selection_result_list:</span>
-<span class="sd">        feature_selection_method_name:</span>
-<span class="sd">        settings:</span>
-<span class="sd">    Returns:</span>
-<span class="sd">        TODO</span>
+<span class="sd">        selection_result_list: List including results for each outer cross-validation iteration.</span>
+<span class="sd">        feature_selection_method_name: Embedded feature selection method.</span>
+<span class="sd">        settings: Settings.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">selection_result_list</span> <span class="o">=</span> <span class="n">_get_results_from_ray</span><span class="p">(</span><span class="n">selection_result_list</span><span class="p">)</span>
