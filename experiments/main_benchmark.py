@@ -43,6 +43,7 @@ if settings.parallel_processes.init_ray:
         runtime_env=runtime_env,
         ignore_reinit_error=True,
         include_dashboard=True,
+        log_to_driver=False,
     )
     print(status)
 else:
