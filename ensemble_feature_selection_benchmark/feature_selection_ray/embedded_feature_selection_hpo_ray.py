@@ -46,7 +46,7 @@ def get_results(
 
     tpe_sampler = TPESampler()
     optuna_search = OptunaSearch(sampler=tpe_sampler, mode=direction, metric="score")
-    optuna_search = ConcurrencyLimiter(optuna_search, max_concurrent=20)
+    # optuna_search = ConcurrencyLimiter(optuna_search, max_concurrent=20)
 
     if "lasso" in selection_method.__name__:
         param_space = {"alpha": tune.qloguniform(0.001, 1, 0.001), "random_state": 42}
