@@ -3,6 +3,8 @@
 # which is available at https://opensource.org/licenses/MIT
 
 """Embedded feature selection with ray tune hyperparameter optimization."""
+from typing import List
+
 import os
 
 import math
@@ -14,6 +16,8 @@ from ray.air.config import RunConfig
 from ray.tune.search import ConcurrencyLimiter
 from ray.tune.search.optuna import OptunaSearch
 from optuna.samplers import TPESampler
+
+from ensemble_feature_selection_benchmark import data_types
 
 
 def get_results(
@@ -30,10 +34,11 @@ def get_results(
         coefficients_lists = []
         shap_values_lists = []
 
+        assert isinstance(preprocessed_data_list[0], data_types.DataSplit)
         # cross-validation
         for data_split in preprocessed_data_list:
             score, coefficients, shap_list = selection_method.calculate_score(
-                ray.get(data_split), config
+                data_split, config
             )
             scores_list.append(score)
             coefficients_lists.append(coefficients)
@@ -126,6 +131,8 @@ def select_features(
         inner_preprocessed_data_splits_list = ray.get(
             preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_loop]
         )
+        assert isinstance(inner_preprocessed_data_splits_list[outer_cv_loop], List)
+
     else:
         inner_preprocessed_data_splits_list = (
             preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_loop]
