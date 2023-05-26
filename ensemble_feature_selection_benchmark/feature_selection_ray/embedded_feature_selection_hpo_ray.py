@@ -114,35 +114,40 @@ def get_results(
 
 def select_features(
     settings,
-    preprocessed_data,
-    outer_cv_loop,
+    inner_preprocessed_data_splits_list,
+    train_data_outer_cv_df,
     n_trials,
     direction,
     selection_method,
     boosting_type=None,
 ) -> dict:
-    if isinstance(preprocessed_data, ray._raylet.ObjectRef):
-        preprocessed_data = ray.get(preprocessed_data)
-    if isinstance(
-        preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_loop],
-        ray._raylet.ObjectRef,
-    ):
-        inner_preprocessed_data_splits_list = ray.get(
-            preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_loop]
-        )
-        assert isinstance(inner_preprocessed_data_splits_list[0], data_types.DataSplit)
-        assert len(inner_preprocessed_data_splits_list) == settings.cv.n_inner_folds
-        # loaded_inner_preprocessed_data_splits_list = []
-        # for element in inner_preprocessed_data_splits_list:
-        #     print(type(element))
-        #     if not isinstance(element, data_types.DataSplit):
-        #         loaded_inner_preprocessed_data_splits_list.append(ray.get(element))
-        # inner_preprocessed_data_splits_list = loaded_inner_preprocessed_data_splits_list
-        # del loaded_inner_preprocessed_data_splits_list
-    else:
-        inner_preprocessed_data_splits_list = (
-            preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_loop]
-        )
+    # if isinstance(preprocessed_data, ray._raylet.ObjectRef):
+    #     preprocessed_data = ray.get(preprocessed_data)
+    # if isinstance(
+    #     preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_loop],
+    #     ray._raylet.ObjectRef,
+    # ):
+    #     inner_preprocessed_data_splits_list = ray.get(
+    #         preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_loop]
+    #     )
+    #     assert isinstance(inner_preprocessed_data_splits_list[0], data_types.DataSplit)
+    #     assert len(inner_preprocessed_data_splits_list) == settings.cv.n_inner_folds
+    #     # loaded_inner_preprocessed_data_splits_list = []
+    #     # for element in inner_preprocessed_data_splits_list:
+    #     #     print(type(element))
+    #     #     if not isinstance(element, data_types.DataSplit):
+    #     #         loaded_inner_preprocessed_data_splits_list.append(ray.get(element))
+    #     # inner_preprocessed_data_splits_list = loaded_inner_preprocessed_data_splits_list
+    #     # del loaded_inner_preprocessed_data_splits_list
+    # else:
+    #     inner_preprocessed_data_splits_list = (
+    #         preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_loop]
+    #     )
+    # train_data_outer_cv_df = ray.get(
+    #     preprocessed_data.outer_preprocessed_data_splits[outer_cv_loop]
+    # ).train_data_outer_cv_df
+    # del preprocessed_data
+
     results = get_results(
         settings,
         inner_preprocessed_data_splits_list,
@@ -156,10 +161,6 @@ def select_features(
     del inner_preprocessed_data_splits_list
 
     # build model for micro_feature_importance
-    train_data_outer_cv_df = ray.get(
-        preprocessed_data.outer_preprocessed_data_splits[outer_cv_loop]
-    ).train_data_outer_cv_df
-    del preprocessed_data
     micro_feature_importance = selection_method.calculate_micro_feature_importance(
         train_data_outer_cv_df, best_result.config
     )
