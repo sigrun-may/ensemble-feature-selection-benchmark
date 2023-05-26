@@ -73,7 +73,7 @@ def _check_result_standard_feature_selection(
             assert not math.isnan(element)
 
 
-def _check_result_reverse_feature_selection(  # NOTE: kann private?
+def _check_result_reverse_feature_selection(
     reverse_feature_selection_result_df: pd.DataFrame,
 ):
     assert len(reverse_feature_selection_result_df.columns) == 2
@@ -87,12 +87,15 @@ def _check_result_reverse_feature_selection(  # NOTE: kann private?
 def check_feature_selection_result_outer_cv(
     feature_selection_result_list: List, feature_selection_method: str, settings
 ):
-    """Check structure and data types of feature selection result.
+    """Checks the structure and data types of the feature selection result of a given feature selection method.
 
     Args:
         feature_selection_result_list: List with all selection results for each iteration of the outer cross-validation.
-        feature_selection_method: Feature selection method name.
+        feature_selection_method: String containing the feature selection method name.
         settings: Project settings (dict or dynaconf object).
+
+    Raises:
+        AssertionError: If dict has got the wrong number of elements or if there are wrong data types contained.
     """
     assert (
         len(feature_selection_result_list) == settings["cv"]["n_outer_folds"]
@@ -115,12 +118,15 @@ def check_feature_selection_result_outer_cv(
 def check_raw_feature_selection_result_dict(
     raw_feature_selection_result_dict: dict, settings
 ):
-    """Check structure and data types of all feature selection results.
+    """Checks the structure and data types of all feature selection results.
 
     Args:
         raw_feature_selection_result_dict: Dict with all selection results of all feature selection methods.
-        Each selection results includes a list of results for each iteration of each outer cross-validation.
+            Each selection results includes a list of results for each iteration of each outer cross-validation.
         settings: Project settings (dict or dynaconf object).
+
+    Raises:
+        AssertionError: If dict has got the wrong number of elements or if there are wrong data types contained.
     """
     assert isinstance(raw_feature_selection_result_dict, dict)
 

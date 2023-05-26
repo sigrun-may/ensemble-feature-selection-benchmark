@@ -5,6 +5,8 @@
 
 .. automodule:: ensemble_feature_selection_benchmark.check_feature_selection_result
 .. automodule:: ensemble_feature_selection_benchmark.data_types
+    :no-special-members:
+    :no-private-members:
 .. automodule:: ensemble_feature_selection_benchmark.load_experiments
 .. automodule:: ensemble_feature_selection_benchmark.power_measurement
 .. automodule:: ensemble_feature_selection_benchmark.preprocessing

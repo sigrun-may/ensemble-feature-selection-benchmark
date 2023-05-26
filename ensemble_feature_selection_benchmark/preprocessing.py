@@ -47,22 +47,45 @@ def str_to_class(class_name):
 
 
 class PowerTransformerBaseClass(ABC):
+    """Base class for power transformations."""
     @staticmethod
     @abstractmethod
     def transform_train_test_split(
         data_df: pd.DataFrame, train_index, test_index
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        """Performs the power transformations and creates the split into training and test data.
+
+        Args:
+            data_df: Dataframe to transform.
+            train_index: indices of training iteration.
+            test_index: indices of test iteration.
+
+        Returns:
+            A tuple of Dataframes including the training data and the test data.
+
+        """
         pass
 
 
 class CorrelationMatrixCalculatorBaseClass(ABC):
+    """Base class for calculating correlation matrices."""
     @staticmethod
     @abstractmethod
     def calculate_correlation_matrix(data_df: pd.DataFrame) -> pd.DataFrame:
+        """Calculates a correlation matrix.
+
+        Args:
+            data_df: Dataframe the correlation matrix should be calculated for.
+
+        Returns:
+            Dataframe including a correlation matrix.
+
+        """
         pass
 
 
 class PreprocessingBaseClass(ABC):
+    """Base class for preprocessing the data."""
     def __init__(self, _power_transformer, _correlation_matrix_calculator):
         self.power_transformer = _power_transformer
         self.correlation_matrix_calculator = _correlation_matrix_calculator
@@ -73,10 +96,33 @@ class PreprocessingBaseClass(ABC):
         self,
         data: pd.DataFrame,
     ) -> PreprocessedData:
+        """Getting the splits of the preprocessed data.
+
+        Args:
+            data: Dataframe including the data that should be preprocessed.
+
+        Returns:
+            PreprocessedData.
+
+        """
         pass
 
     @staticmethod
     def preprocess_data_split(self, train_index, test_index, data_df) -> DataSplit:
+        """Creates the DataSplit of the Dataframe.
+
+        Args:
+            train_index: array of indices of the training iteration.
+            test_index: array of indices of the test iteration.
+            data_df: Dataframe the DataSplit should be created for.
+
+        Returns:
+            DataSplit.
+
+        Raises:
+            AssertionError: if no power transformer is selected or the transformation failed.
+
+        """
         if settings["preprocessing"]["scale_and_power_transform"]:
             # remove label for transformation
             # labels must be in col 0 (first col)
@@ -142,18 +188,21 @@ class PreprocessingBaseClass(ABC):
 
 
 class PandasPearsonCorrelation(CorrelationMatrixCalculatorBaseClass):
+    """Class for calculating correlation matrices with Pearson."""
     @staticmethod
     def calculate_correlation_matrix(data_df: pd.DataFrame) -> pd.DataFrame:
         return data_df.iloc[:, 1:].corr(method="pearson")
 
 
 class PandasSpearmanCorrelation(CorrelationMatrixCalculatorBaseClass):
+    """Class for calculating correlation matrices with Spearman."""
     @staticmethod
     def calculate_correlation_matrix(data_df: pd.DataFrame) -> pd.DataFrame:
         return data_df.iloc[:, 1:].corr(method="spearman")
 
 
 class PreprocessingSerial(PreprocessingBaseClass):
+    """Class to preprocess the data serial."""
     power_transformer = None
     correlation_matrix_calculator = None
 
@@ -162,6 +211,18 @@ class PreprocessingSerial(PreprocessingBaseClass):
         self,
         data_df: pd.DataFrame,
     ) -> PreprocessedData:
+        """Getting the splits of the preprocessed data.
+
+        Args:
+            data: Dataframe including the data that should be preprocessed.
+
+        Returns:
+            PreprocessedData
+
+        Raises:
+            AssertionError: If the structure of attributes is not correct at some point.
+
+        """
         outer_preprocessed_data_splits = []
         inner_preprocessed_data_splits_list = []
 
@@ -218,10 +279,26 @@ class PreprocessingSerial(PreprocessingBaseClass):
 
 
 class YeoJohnsonSklearn(PowerTransformerBaseClass):
+    """Class for power transformations by Yeo Johnson with sklearn."""
     @staticmethod
     def transform_train_test_split(
         unlabeled_data_df: pd.DataFrame, train_index: np.ndarray, test_index: np.ndarray
     ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        """Performs the power transformations and creates the split into training and test data.
+
+        Args:
+            unlabeled_data_df: Dataframe to transform not including labels.
+            train_index: indices of training iteration.
+            test_index: indices of test iteration.
+
+        Returns:
+            A tuple of Dataframes including the training data and the test data.
+
+        Raises:
+            AssertionError: If train and test arrays shape is not correct after transformation.
+
+        """
+
         # check if data is unlabeled
         assert "label" not in unlabeled_data_df.columns
 
@@ -241,10 +318,25 @@ class YeoJohnsonSklearn(PowerTransformerBaseClass):
 
 
 class YeoJohnsonC(PowerTransformerBaseClass):
+    """Class for power transformations by Yeo Johnson with C."""
     @staticmethod
     def transform_train_test_split(
         unlabeled_data_df: pd.DataFrame, train_index: np.ndarray, test_index: np.ndarray
     ) -> Tuple[np.ndarray, np.ndarray]:
+        """Performs the power transformations and creates the split into training and test data.
+
+        Args:
+            unlabeled_data_df: Dataframe to transform not including labels.
+            train_index: indices of training iteration.
+            test_index: indices of test iteration.
+
+        Returns:
+            A tuple of Dataframes including the training data and the test data.
+
+        Raises:
+            AssertionError: If train and test arrays shape is not correct after transformation.
+
+        """
         # check if data is unlabeled
         assert "label" not in unlabeled_data_df.columns
         train_np = unlabeled_data_df.iloc[train_index, :].to_numpy()
@@ -317,6 +409,21 @@ class YeoJohnsonC(PowerTransformerBaseClass):
 
 
 def prepare_data(data_df: pd.DataFrame) -> pd.DataFrame:
+    """Prepares the data for transformations.
+
+    Prepares the data according to the settings by removing perfectly seperated features and/or adapting the data shape
+    if necessary.
+
+    Args:
+        data_df: Dataframe to be prepared.
+
+    Returns:
+        Dataframe including the prepared data.
+
+    Raises:
+        AssertionError: If dataframe has missing values or the shape of the prepared is not correct.
+
+    """
     # check for missing values
     assert not data_df.isnull().values.any(), "Missing values" + data_df.head()
 
@@ -330,6 +437,18 @@ def prepare_data(data_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def remove_perfectly_separated_features(data_df):
+    """Removes the features that are perfectly seperated from a given Dataframe.
+
+    Args:
+        data_df: Dataframe perfectly seperated features should be removed from.
+
+    Returns:
+        Dataframe without perfectly seperated features.
+
+    Raises:
+        AssertionError: If the given Dataframe does not include a label or any features.
+
+    """
     list_of_separated_features = []
     for col_name, data in data_df.items():
         if col_name == "label":
@@ -360,6 +479,15 @@ def remove_perfectly_separated_features(data_df):
 
 
 def preprocess_data() -> PreprocessedData:
+    """Loads data from csv given in settings and preprocesses it.
+
+    Returns:
+        Dataframe containing the preprocessed data from the csv selected in settings.
+
+    Raises:
+        AssertionError: If the data loaded form the csv is unlabeled.
+
+    """
     # load data
     input_data_path = f"{settings['cwd_path']}/{settings['data']['folder']}/{settings['data']['name']}/{settings['data']['name']}.csv"
     data_df = pd.read_csv(input_data_path)

@@ -18,7 +18,13 @@ TrainTestSplit = namedtuple("TrainTestSplit", ["train_np", "test_np"])
 
 @dataclass
 class PreprocessedData:
-    """Class to hold the complete preprocessed data."""
+    """Class to hold the complete preprocessed data.
+
+    Attributes:
+        inner_preprocessed_data_splits_list:
+        outer_preprocessed_data_splits:
+
+    """
 
     inner_preprocessed_data_splits_list: List[List[DataSplit]]
     outer_preprocessed_data_splits: List[DataSplit]

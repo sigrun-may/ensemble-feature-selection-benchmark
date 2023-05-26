@@ -85,6 +85,15 @@ def _get_power_consumption_baseline(node_power_measurement_dict, seconds: int):
 
 
 def initialize_benchmark_dict():
+    """ Initializes a benchmark dict for power measurement.
+
+    Returns:
+        A dict containing the necessary keys for the power measurement and mapping the current datetime.
+
+    Raises:
+        AssertionError: If key "time" is not of type datetime.
+
+    """
     # initialize dict for power measurement
     benchmark_dict = {}
     for node_id in settings["nodes"]["baseBoardIds"]:

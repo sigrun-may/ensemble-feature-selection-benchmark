@@ -47,14 +47,17 @@ def _parse_raw_selection_results(raw_selection_results_dict: dict) -> dict:
 
 
 def pickle_data(data, path):
-    """TODO
+    """Writes a pickled representation of the given data, saves it in the given path and checks the pickled data.
 
     Args:
-        data: TODO
-        path: TODO
+        data: List of dictionaries containing the experiment results.
+        path: String of the path the pickled data should be saved in.
 
     Returns:
-        TODO
+        List of dictionaries containing the experiment results reconstituted from the pickled data.
+
+    Raises:
+        AssertionError: If data or path is not given.
 
     """
     assert data is not None
@@ -69,14 +72,14 @@ def pickle_data(data, path):
 
 
 def save_experiment_in_mongodb(mongo_client, document_dict):
-    """TODO
+    """Saves the experiment results in MongoDB and reloads it from the MongoDB to test the stored data.
 
     Args:
-        mongo_client: TODO
-        document_dict: TODO
+        mongo_client: MongoClient for a MongoDB instance.
+        document_dict: dictionary containing the experiment results.
 
     Returns:
-        TODO
+        Dictionary containing the experiment results reread from MongoDB.
 
     """
     # connect to mongo db
@@ -117,7 +120,10 @@ def save_raw_selection_result_per_method(
     Args:
         selection_result_list: List including results for each outer cross-validation iteration.
         feature_selection_method_name: Embedded feature selection method.
-        settings: Settings.
+        settings: Project settings (dict or dynaconf object).
+
+    Raises:
+        AssertionError: If structures or data types are not correct.
 
     """
     selection_result_list = _get_results_from_ray(selection_result_list)
@@ -194,15 +200,16 @@ def save_duration_and_power_consumption(
     benchmark_dict: Optional[dict],
     element: str,
 ):
-    """TODO
+    """Saves the measured duration for the experiment and the measured power consumption in MongoDB.
 
     Args:
-        settings: TODO
-        benchmark_dict: TODO
-        element: TODO
+        settings: Project settings (dict or dynaconf object).
+        benchmark_dict: Dictionary mapping the necessary values for time and power measurement.
+        element: String "preprocessing" or "feature_selection" or "baseline".
 
-    Returns:
-        TODO
+    Raises:
+        AssertionError: If element is no accepted String or if data types are not correct or if test for reloading the
+            data from MongoDB fails.
 
     """
     if settings["env"] == "cluster":
