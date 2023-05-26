@@ -13,7 +13,7 @@ def parallel_hpo_ray_tune():
     config_toml_file["parallel_processes"]["init_ray"] = True
     # Maximum number of trials to run concurrently. Must be non-negative.
     # If None or 0, no limit will be applied. https://docs.ray.io/en/latest/_modules/ray/tune/tune.html
-    config_toml_file["parallel_processes"]["max_concurrent_trials_hpo_ray"] = 0
+    config_toml_file["parallel_processes"]["max_concurrent_trials_hpo_ray"] = 36
     with open(initialize_settings.file_name, mode="wt", encoding="utf-8") as fp:
         tomlkit.dump(config_toml_file, fp)
 
