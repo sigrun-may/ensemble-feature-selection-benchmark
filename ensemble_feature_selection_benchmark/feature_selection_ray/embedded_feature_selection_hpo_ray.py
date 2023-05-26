@@ -96,7 +96,7 @@ def get_results(
             checkpoint_config=air.CheckpointConfig(
                 checkpoint_frequency=0,
             ),
-            sync_config=tune.SyncConfig(syncer=None),
+            sync_config=tune.SyncConfig(syncer='auto'),
         ),
     )
     return tuner.fit()
