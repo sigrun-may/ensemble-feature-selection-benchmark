@@ -54,8 +54,8 @@ class LassoSklearn(FeatureSelectionBaseClass):
             )
             return embedded_feature_selection_hpo_ray.select_features(
                 settings_id,
-                data.inner_preprocessed_data_splits_list[outer_cv_iteration],
-                data.outer_preprocessed_data_splits[outer_cv_iteration].train_data_outer_cv_df,
+                data,
+                outer_cv_iteration,
                 n_trials=settings_id.LassoSklearnOptuna.n_trials,
                 direction="max",  # maximizing r2
                 selection_method=standard_sklearn_lasso,
@@ -84,8 +84,8 @@ class RandomForestSklearn(FeatureSelectionBaseClass):
         if settings_id.parallel_processes.max_concurrent_trials_hpo_ray != 1:
             return embedded_feature_selection_hpo_ray.select_features(
                 settings_id,
-                data.inner_preprocessed_data_splits_list[outer_cv_iteration],
-                data.outer_preprocessed_data_splits[outer_cv_iteration].train_data_outer_cv_df,
+                data,
+                outer_cv_iteration,
                 n_trials=settings_id.RandomForestSklearnOptuna.n_trials,
                 direction="max",  # maximizing accuracy
                 selection_method=standard_sklearn_random_forest,
@@ -111,8 +111,8 @@ class SVC(FeatureSelectionBaseClass):
         if settings_id.parallel_processes.max_concurrent_trials_hpo_ray != 1:
             return embedded_feature_selection_hpo_ray.select_features(
                 settings_id,
-                data.inner_preprocessed_data_splits_list[outer_cv_iteration],
-                data.outer_preprocessed_data_splits[outer_cv_iteration].train_data_outer_cv_df,
+                data,
+                outer_cv_iteration,
                 n_trials=settings_id.SvcSklearnOptuna.n_trials,
                 direction="max",  # maximizing accuracy
                 selection_method=standard_sklearn_svm,
@@ -195,8 +195,8 @@ class GradientBoostingDecisionTreeLightGBM(FeatureSelectionBaseClass):
         if settings_id.parallel_processes.max_concurrent_trials_hpo_ray != 1:
             return embedded_feature_selection_hpo_ray.select_features(
                 settings_id,
-                data.inner_preprocessed_data_splits_list[outer_cv_iteration],
-                data.outer_preprocessed_data_splits[outer_cv_iteration].train_data_outer_cv_df,
+                data,
+                outer_cv_iteration,
                 n_trials=settings_id.LightgbmOptuna.n_trials,
                 direction="min",  # minimizing log loss
                 selection_method=standard_lightgbm,
@@ -237,8 +237,8 @@ class ExtraTreesLightGBM(FeatureSelectionBaseClass):
         if settings_id.parallel_processes.max_concurrent_trials_hpo_ray != 1:
             return embedded_feature_selection_hpo_ray.select_features(
                 settings_id,
-                data.inner_preprocessed_data_splits_list[outer_cv_iteration],
-                data.outer_preprocessed_data_splits[outer_cv_iteration].train_data_outer_cv_df,
+                data,
+                outer_cv_iteration,
                 n_trials=settings_id.LightgbmOptuna.n_trials,
                 direction="min",  # minimizing log loss
                 selection_method=standard_lightgbm,
