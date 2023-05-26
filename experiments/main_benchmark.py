@@ -71,14 +71,15 @@ def run_experiment():
             preprocessed_inner_cv
         ) in preprocessed_data.inner_preprocessed_data_splits_list:
             assert len(preprocessed_inner_cv) == settings.cv.n_inner_folds
-            # preprocessed_inner_cv_ids = []
-            # for preprocessed_inner_cv_iteration in preprocessed_inner_cv:
-            #     preprocessed_inner_cv_iteration_id = ray.put(
-            #         preprocessed_inner_cv_iteration
-            #     )
-            #     preprocessed_inner_cv_ids.append(preprocessed_inner_cv_iteration_id)
-            # inner_preprocessed_data_id_list.append(preprocessed_inner_cv_ids)
-            inner_preprocessed_data_id_list.append(ray.put(preprocessed_inner_cv))
+            preprocessed_inner_cv_ids = []
+            for preprocessed_inner_cv_iteration in preprocessed_inner_cv:
+                preprocessed_inner_cv_iteration_id = ray.put(
+                    preprocessed_inner_cv_iteration
+                )
+                preprocessed_inner_cv_ids.append(preprocessed_inner_cv_iteration_id)
+            inner_preprocessed_data_id_list.append(preprocessed_inner_cv_ids)
+            # inner_preprocessed_data_id_list.append(ray.put(preprocessed_inner_cv))
+            del preprocessed_inner_cv_ids
             del preprocessed_inner_cv
         assert len(inner_preprocessed_data_id_list) == settings.cv.n_outer_folds
         preprocessed_data.inner_preprocessed_data_splits_list = (
