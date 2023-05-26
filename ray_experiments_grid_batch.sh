@@ -3,7 +3,7 @@
 # which is available at https://opensource.org/licenses/MIT
 
 # start ray cluster in conda environment
-# ray start --head
+# ray start --head and specify resources
 
 #python experiments/experiment_parallel_hpo_ray.py
 #OMP_NUM_THREADS=1 python experiments/main_benchmark.py 2>&1 | sed '/.*LightGBM].*/d'
