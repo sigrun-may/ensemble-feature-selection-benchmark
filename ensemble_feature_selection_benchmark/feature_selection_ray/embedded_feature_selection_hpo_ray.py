@@ -34,6 +34,7 @@ def get_results(
         coefficients_lists = []
         shap_values_lists = []
 
+        print(type(preprocessed_data_list[0]))
         assert isinstance(preprocessed_data_list[0], data_types.DataSplit)
         # cross-validation
         for data_split in preprocessed_data_list:
