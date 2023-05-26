@@ -13,6 +13,7 @@ from sklearn.preprocessing import MinMaxScaler
 from config import settings
 from ensemble_feature_selection_benchmark.aggregation import aggregation_methods
 
+"""Aggregate the results of feautre selection methods."""
 
 _logger = logging.getLogger(__name__)
 
@@ -37,13 +38,14 @@ def _aggregate_outer_cv(aggregation_method_cv: str, result_per_method_dict: dict
 
 
 def aggregate_selections(result_per_method_dict, experiment_id=None):
-    """aggregate results of feature selection methods
+    """Aggregates the results of the feature selection methods.
 
     Args:
-        result_per_method_dict: dictionary containing the results per selection method
-        experiment_id: the id of the experiment the results of the selection methods should be aggregated
+        result_per_method_dict: dictionary containing the results per selection method.
+        experiment_id: the id of the experiment the results of the selection methods should be aggregated.
 
-    Returns: dictionary containing the aggregation results per aggregation method that is selected in the settings
+    Returns:
+        dictionary containing the aggregation results per aggregation method that is selected in the settings.
 
     """
     if experiment_id is None:

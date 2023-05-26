@@ -12,6 +12,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 from ensemble_feature_selection_benchmark import check_feature_selection_result
 
+"""Working on results."""
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)
@@ -71,6 +72,8 @@ def _evaluate_selection_result(
 
 
 def find_robust_features(feature_subsets_list: List[dict]):
+    # TODO: add DocString
+
     # initialize robust subset
     robust_feature_subsets = feature_subsets_list[0]
 
@@ -94,6 +97,7 @@ def find_robust_features(feature_subsets_list: List[dict]):
 
 
 def get_feature_selection_results_per_method(raw_selection_results_dict, settings):
+    # TODO: add DocString
     check_feature_selection_result.check_raw_feature_selection_result_dict(
         raw_selection_results_dict, settings
     )
