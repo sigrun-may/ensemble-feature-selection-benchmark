@@ -3,6 +3,7 @@
 # which is available at https://opensource.org/licenses/MIT
 
 """Embedded feature selection with ray tune hyperparameter optimization."""
+import os
 
 import math
 
@@ -45,7 +46,7 @@ def get_results(
 
     tpe_sampler = TPESampler()
     optuna_search = OptunaSearch(sampler=tpe_sampler, mode=direction, metric="score")
-    optuna_search = ConcurrencyLimiter(optuna_search, max_concurrent=36)
+    optuna_search = ConcurrencyLimiter(optuna_search, max_concurrent=20)
 
     if "lasso" in selection_method.__name__:
         param_space = {"alpha": tune.qloguniform(0.001, 1, 0.001), "random_state": 42}
@@ -83,6 +84,8 @@ def get_results(
     else:
         raise ValueError(f"Method {selection_method.__name__} is not implemented")
 
+    os.environ["TUNE_DISABLE_AUTO_CALLBACK_LOGGERS"] = "1"
+
     # start a Tune run
     tuner = tune.Tuner(
         _objective,
@@ -92,13 +95,15 @@ def get_results(
             max_concurrent_trials=settings.parallel_processes.max_concurrent_trials_hpo_ray,
             search_alg=optuna_search,
         ),
+        reuse_actors=True,
         run_config=RunConfig(
             local_dir=settings.cwd_path,
             verbose=0,
             checkpoint_config=air.CheckpointConfig(
-                checkpoint_frequency=0,
+                checkpoint_frequency=0, num_to_keep=0, checkpoint_at_end=False
             ),
             sync_config=tune.SyncConfig(syncer='auto'),
+            log_to_file=False,
         ),
     )
     return tuner.fit()
