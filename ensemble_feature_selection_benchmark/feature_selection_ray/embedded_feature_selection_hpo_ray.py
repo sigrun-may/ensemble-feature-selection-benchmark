@@ -95,7 +95,6 @@ def get_results(
             max_concurrent_trials=settings.parallel_processes.max_concurrent_trials_hpo_ray,
             search_alg=optuna_search,
         ),
-        reuse_actors=True,
         run_config=RunConfig(
             local_dir=settings.cwd_path,
             verbose=0,
