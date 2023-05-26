@@ -147,14 +147,14 @@ class RandomForestLightGBM(FeatureSelectionBaseClass):
         assert len(kwargs) == 1
         assert "settings_id" in kwargs
         settings_id = kwargs["settings_id"]
-        inner_preprocessed_data_splits_list = ray.get(ray.get(data).inner_preprocessed_data_splits_list[outer_cv_iteration])
-        train_data_outer_cv_df = ray.get(ray.get(data).outer_preprocessed_data_splits[outer_cv_iteration]).train_data_outer_cv_df
+        # inner_preprocessed_data_splits_list = ray.get(ray.get(data).inner_preprocessed_data_splits_list[outer_cv_iteration])
+        # train_data_outer_cv_df = ray.get(ray.get(data).outer_preprocessed_data_splits[outer_cv_iteration]).train_data_outer_cv_df
 
         if settings_id.parallel_processes.max_concurrent_trials_hpo_ray != 1:
             return embedded_feature_selection_hpo_ray.select_features(
                 settings_id,
-                inner_preprocessed_data_splits_list,
-                train_data_outer_cv_df,
+                data,
+                outer_cv_iteration,
                 n_trials=settings_id.LightgbmOptuna.n_trials,
                 direction="min",  # minimizing log loss
                 selection_method=standard_lightgbm,
