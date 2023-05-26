@@ -100,7 +100,7 @@ def get_results(
             local_dir=settings.cwd_path,
             verbose=0,
             checkpoint_config=air.CheckpointConfig(
-                checkpoint_frequency=0, num_to_keep=0, checkpoint_at_end=False
+                checkpoint_frequency=0, checkpoint_at_end=False
             ),
             sync_config=tune.SyncConfig(syncer='auto'),
             log_to_file=False,
