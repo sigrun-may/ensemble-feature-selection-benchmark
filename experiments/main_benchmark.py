@@ -65,10 +65,12 @@ def run_experiment():
 
     # feature selection
     if settings.parallel_processes.init_ray:
+        assert len(preprocessed_data.inner_preprocessed_data_splits_list) == settings.cv.n_outer_folds
         inner_preprocessed_data_id_list = []
         for (
             preprocessed_inner_cv
         ) in preprocessed_data.inner_preprocessed_data_splits_list:
+            assert len(preprocessed_inner_cv) == settings.cv.n_inner_folds
             # preprocessed_inner_cv_ids = []
             # for preprocessed_inner_cv_iteration in preprocessed_inner_cv:
             #     preprocessed_inner_cv_iteration_id = ray.put(
@@ -77,9 +79,12 @@ def run_experiment():
             #     preprocessed_inner_cv_ids.append(preprocessed_inner_cv_iteration_id)
             # inner_preprocessed_data_id_list.append(preprocessed_inner_cv_ids)
             inner_preprocessed_data_id_list.append(ray.put(preprocessed_inner_cv))
+            del preprocessed_inner_cv
+        assert len(inner_preprocessed_data_id_list) == settings.cv.n_outer_folds
         preprocessed_data.inner_preprocessed_data_splits_list = (
             inner_preprocessed_data_id_list
         )
+        del inner_preprocessed_data_id_list
 
         outer_preprocessed_data_id_list = []
         for (
@@ -89,9 +94,12 @@ def run_experiment():
                 preprocessed_outer_cv_iteration
             )
             outer_preprocessed_data_id_list.append(preprocessed_outer_cv_iteration_id)
+            del preprocessed_outer_cv_iteration
+            del preprocessed_outer_cv_iteration_id
         preprocessed_data.outer_preprocessed_data_splits = (
             outer_preprocessed_data_id_list
         )
+        del outer_preprocessed_data_id_list
 
         benchmark("feature_selection", start_time_workflow, ray.put(preprocessed_data))
     else:

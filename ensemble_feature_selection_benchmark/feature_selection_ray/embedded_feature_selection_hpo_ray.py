@@ -130,15 +130,15 @@ def select_features(
         inner_preprocessed_data_splits_list = ray.get(
             preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_loop]
         )
-        assert isinstance(inner_preprocessed_data_splits_list[outer_cv_loop], List)
-        loaded_inner_preprocessed_data_splits_list = []
-        for element in inner_preprocessed_data_splits_list:
-            print(type(element))
-            if not isinstance(element, data_types.DataSplit):
-                loaded_inner_preprocessed_data_splits_list.append(ray.get(element))
-        inner_preprocessed_data_splits_list = loaded_inner_preprocessed_data_splits_list
-        del loaded_inner_preprocessed_data_splits_list
-
+        assert isinstance(inner_preprocessed_data_splits_list[0], data_types.DataSplit)
+        assert len(inner_preprocessed_data_splits_list) == settings.cv.n_inner_folds
+        # loaded_inner_preprocessed_data_splits_list = []
+        # for element in inner_preprocessed_data_splits_list:
+        #     print(type(element))
+        #     if not isinstance(element, data_types.DataSplit):
+        #         loaded_inner_preprocessed_data_splits_list.append(ray.get(element))
+        # inner_preprocessed_data_splits_list = loaded_inner_preprocessed_data_splits_list
+        # del loaded_inner_preprocessed_data_splits_list
     else:
         inner_preprocessed_data_splits_list = (
             preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_loop]
@@ -159,6 +159,7 @@ def select_features(
     train_data_outer_cv_df = ray.get(
         preprocessed_data.outer_preprocessed_data_splits[outer_cv_loop]
     ).train_data_outer_cv_df
+    del preprocessed_data
     micro_feature_importance = selection_method.calculate_micro_feature_importance(
         train_data_outer_cv_df, best_result.config
     )
@@ -175,7 +176,4 @@ def select_features(
     ]
     result_dict["micro_feature_importance"] = list(micro_feature_importance)
     del best_result
-    assert len(result_dict["macro_feature_importances"]) == len(
-        preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_loop]
-    )
     return result_dict
