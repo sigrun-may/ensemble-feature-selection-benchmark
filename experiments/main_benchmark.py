@@ -43,7 +43,6 @@ if settings.parallel_processes.init_ray:
         runtime_env=runtime_env,
         ignore_reinit_error=True,
         include_dashboard=True,
-        storage=f"{settings.cwd_path}/ray"
     )
     print(status)
 else:
