@@ -69,13 +69,14 @@ def run_experiment():
         for (
             preprocessed_inner_cv
         ) in preprocessed_data.inner_preprocessed_data_splits_list:
-            preprocessed_inner_cv_ids = []
-            for preprocessed_inner_cv_iteration in preprocessed_inner_cv:
-                preprocessed_inner_cv_iteration_id = ray.put(
-                    preprocessed_inner_cv_iteration
-                )
-                preprocessed_inner_cv_ids.append(preprocessed_inner_cv_iteration_id)
-            inner_preprocessed_data_id_list.append(preprocessed_inner_cv_ids)
+            # preprocessed_inner_cv_ids = []
+            # for preprocessed_inner_cv_iteration in preprocessed_inner_cv:
+            #     preprocessed_inner_cv_iteration_id = ray.put(
+            #         preprocessed_inner_cv_iteration
+            #     )
+            #     preprocessed_inner_cv_ids.append(preprocessed_inner_cv_iteration_id)
+            # inner_preprocessed_data_id_list.append(preprocessed_inner_cv_ids)
+            inner_preprocessed_data_id_list.append(ray.put(preprocessed_inner_cv))
         preprocessed_data.inner_preprocessed_data_splits_list = (
             inner_preprocessed_data_id_list
         )
