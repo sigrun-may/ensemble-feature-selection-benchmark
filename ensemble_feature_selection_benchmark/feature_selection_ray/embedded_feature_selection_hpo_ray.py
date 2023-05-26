@@ -96,7 +96,7 @@ def get_results(
             search_alg=optuna_search,
         ),
         run_config=RunConfig(
-            local_dir=settings.cwd_path,
+            local_dir=f"{settings.cwd_path}/ray",
             verbose=0,
             checkpoint_config=air.CheckpointConfig(
                 checkpoint_frequency=0, checkpoint_at_end=False
