@@ -13,3 +13,14 @@
 .wy-side-nav-search > a.icon.icon-home {
     font-size: 160%;
 }
+
+/* all boxes for headings same width */
+html.writer-html4 .rst-content dl:not(.docutils) > dt, html.writer-html5 .rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple) > dt{
+    display: block !important;
+}
+
+
+
+
+
+

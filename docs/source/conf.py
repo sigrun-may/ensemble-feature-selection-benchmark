@@ -117,6 +117,12 @@ autodoc_default_options = {
     "exclude-members": "__weakref__, __init__",
 }
 
+
+# If true, the current module name will be prepended to all description
+# unit titles (such as .. function::).
+add_module_names = False
+
+
 # True to convert the type definitions in the docstrings as references.
 # https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html#confval-napoleon_preprocess_types
 napoleon_preprocess_types = True
