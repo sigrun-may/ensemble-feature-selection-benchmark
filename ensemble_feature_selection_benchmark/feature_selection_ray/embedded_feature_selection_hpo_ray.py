@@ -100,12 +100,12 @@ def get_results(
             search_alg=optuna_search,
         ),
         run_config=RunConfig(
-            local_dir=f"{settings.cwd_path}/ray",
+            # local_dir=f"{settings.cwd_path}/ray_results",
             verbose=0,
             checkpoint_config=air.CheckpointConfig(
                 checkpoint_frequency=0, checkpoint_at_end=False
             ),
-            sync_config=tune.SyncConfig(syncer='auto'),
+            sync_config=tune.SyncConfig(syncer=None, sync_artifacts=False),
             log_to_file=False,
         ),
     )
