@@ -132,6 +132,13 @@ def select_features(
             preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_loop]
         )
         assert isinstance(inner_preprocessed_data_splits_list[outer_cv_loop], List)
+        loaded_inner_preprocessed_data_splits_list = []
+        for element in inner_preprocessed_data_splits_list:
+            print(type(element))
+            if not isinstance(element, data_types.DataSplit):
+                loaded_inner_preprocessed_data_splits_list.append(ray.get(element))
+        inner_preprocessed_data_splits_list = loaded_inner_preprocessed_data_splits_list
+        del loaded_inner_preprocessed_data_splits_list
 
     else:
         inner_preprocessed_data_splits_list = (
