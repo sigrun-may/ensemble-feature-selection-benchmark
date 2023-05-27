@@ -14,7 +14,7 @@ from ensemble_feature_selection_benchmark import load_experiments
 from config import settings
 
 
-experiment_id = 2
+experiment_id = 1
 if settings.env == "local":
     (
         raw_feature_selection_result,
