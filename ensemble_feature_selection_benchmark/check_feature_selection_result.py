@@ -130,7 +130,7 @@ def check_raw_feature_selection_result_dict(
         len(raw_feature_selection_result_dict)
         == len(settings["selection_method"]["methods"]) + 1
     ), (
-        f"{raw_feature_selection_result_dict}, len(settings['selection_method']['methods']) + 1: "
+        f"{len(raw_feature_selection_result_dict.keys())}, len(settings['selection_method']['methods']) + 1: "
         f"{len(settings['selection_method']['methods']) + 1}"
     )
     for key, value in raw_feature_selection_result_dict.items():
