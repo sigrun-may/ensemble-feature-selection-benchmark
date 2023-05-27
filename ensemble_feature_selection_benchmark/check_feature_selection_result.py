@@ -125,6 +125,7 @@ def check_raw_feature_selection_result_dict(
     assert isinstance(raw_feature_selection_result_dict, dict)
 
     # all selection methods + feature names
+    print(raw_feature_selection_result_dict.keys())
     assert (
         len(raw_feature_selection_result_dict)
         == len(settings["selection_method"]["methods"]) + 1
