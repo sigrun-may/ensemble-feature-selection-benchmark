@@ -271,7 +271,7 @@ class YeoJohnsonC(PowerTransformerBaseClass):
         test_pd = unlabeled_data_df.iloc[test_index, :]
         transformed_test_np = np.zeros_like(test_pd.values)
 
-        print("duration= ", start-datetime.now())
+        print("duration= ", datetime.now()-start)
 
         transformed_test_np_stats = np.zeros_like(test_pd.values)
         skews_c = []
