@@ -255,9 +255,15 @@ class YeoJohnsonC(PowerTransformerBaseClass):
             lambdas,
             skews,
             _,
-        ) = yeo_johnson_c.automated_yeo_johnson_power_transformation(
+        ) = yeo_johnson_c.yeo_johnson_power_transformation(
             path_to_c_library=settings["path_yeo_johnson_c_library"],
             unlabeled_data_np=train_np,
+            interval_start= settings.preprocessing.interval_start,
+            interval_end=settings.preprocessing.interval_end,
+            interval_parameter=settings.preprocessing.interval_parameter,
+            standardize=settings.preprocessing.standardize,
+            time_stamps=settings.preprocessing.time_stamps,
+            number_of_threads=settings.parallel_processes.yeo_johnson_c,
         )
         # transform test data
         test_pd = unlabeled_data_df.iloc[test_index, :]
