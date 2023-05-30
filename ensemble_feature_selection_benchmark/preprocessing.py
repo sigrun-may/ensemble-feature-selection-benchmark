@@ -249,6 +249,8 @@ class YeoJohnsonC(PowerTransformerBaseClass):
         assert "label" not in unlabeled_data_df.columns
         train_np = unlabeled_data_df.iloc[train_index, :].to_numpy()
 
+        start = datetime.now()
+
         # transform and standardize train data
         (
             transformed_train_np,
@@ -268,6 +270,8 @@ class YeoJohnsonC(PowerTransformerBaseClass):
         # transform test data
         test_pd = unlabeled_data_df.iloc[test_index, :]
         transformed_test_np = np.zeros_like(test_pd.values)
+
+        print("duration= ", start-datetime.now())
 
         transformed_test_np_stats = np.zeros_like(test_pd.values)
         skews_c = []
