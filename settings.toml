@@ -19,7 +19,7 @@ name = "separated"
 # name = "tiny"
 folder = "/experiments/data"
 number_of_samples = 30
-number_of_features = 5000
+number_of_features = 20000
 pos_label = 1
 remove_perfect_separated_features = false
 
@@ -82,13 +82,14 @@ standardize = true
 time_stamps = false
 path_yeo_johnson_fpga_module = ""
 # set train train_correlation_method = None or "" (empty string) if no correlation matrix is needed for training
-train_correlation_method = "PandasPearsonCorrelation"
+# train_correlation_method = "PandasPearsonCorrelation"
+train_correlation_method = ""
 feature_cluster_correlation_method = "spearman"
 
 [selection_method]
-#methods = ["RandomForestLightGBM", "ExtraTreesLightGBM", "GradientBoostingDecisionTreeLightGBM", "LassoSklearn", "RandomForestSklearn",] # "ReverseLassoSklearn"]
+methods = ["RandomForestLightGBM", "ExtraTreesLightGBM", "GradientBoostingDecisionTreeLightGBM", "LassoSklearn", "RandomForestSklearn",] # "ReverseLassoSklearn"]
 
-methods = ["RandomForestLightGBM"]
+#methods = ["RandomForestLightGBM"]
 
 [aggregation_method_cv]
 methods = ["ArithmeticMean"]
