@@ -202,67 +202,67 @@
     <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">store_result</span><span class="p">:</span>
-        <span class="c1"># store data in mongodb</span>
-        <span class="k">if</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;env&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;cluster&quot;</span><span class="p">:</span>
-            <span class="n">converted_raw_selection_result</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">_convert_raw_selection_result_from_dataframe_to_list</span><span class="p">(</span>
-                    <span class="n">selection_result_list</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">converted_raw_selection_result</span><span class="p">,</span> <span class="n">List</span><span class="p">)</span>
-
-            <span class="c1"># create experiment</span>
-            <span class="n">experiment</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;experiment_id&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;experiment_id&quot;</span><span class="p">],</span>
-                <span class="s2">&quot;mongodb_settings_id&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;mongodb_id&quot;</span><span class="p">],</span>
-                <span class="n">feature_selection_method_name</span><span class="p">:</span> <span class="n">converted_raw_selection_result</span><span class="p">,</span>
-            <span class="p">}</span>
-            <span class="n">saved_data</span> <span class="o">=</span> <span class="n">save_experiment_in_mongodb</span><span class="p">(</span>
-                <span class="n">mongo_client</span><span class="o">=</span><span class="n">MongoClient</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;mongo_db_url&quot;</span><span class="p">]),</span>
-                <span class="n">document_dict</span><span class="o">=</span><span class="n">experiment</span><span class="p">,</span>
-            <span class="p">)</span>
-
-            <span class="c1"># test loaded data</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">saved_data</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;experiment_id&quot;</span><span class="p">:</span>
-                    <span class="k">assert</span> <span class="n">saved_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;experiment_id&quot;</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;mongodb_settings_id&quot;</span><span class="p">:</span>
-                    <span class="k">assert</span> <span class="n">saved_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;mongodb_id&quot;</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">feature_selection_method_name</span><span class="p">:</span>
-                    <span class="k">assert</span> <span class="n">converted_raw_selection_result</span> <span class="o">==</span> <span class="n">saved_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="s2">&quot;Reverse&quot;</span> <span class="ow">in</span> <span class="n">feature_selection_method_name</span><span class="p">:</span>
-                        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">saved_data</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">List</span><span class="p">)</span>
-                        <span class="c1"># convert back to pandas</span>
-                        <span class="n">new_list</span> <span class="o">=</span> <span class="p">[]</span>
-                        <span class="k">for</span> <span class="n">cv_iteration_result</span> <span class="ow">in</span> <span class="n">saved_data</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
-                            <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">cv_iteration_result</span><span class="p">))</span>
-                        <span class="n">check_feature_selection_result</span><span class="o">.</span><span class="n">check_feature_selection_result_outer_cv</span><span class="p">(</span>
-                            <span class="n">new_list</span><span class="p">,</span> <span class="n">feature_selection_method_name</span><span class="p">,</span> <span class="n">settings</span>
-                        <span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Result </span><span class="si">{</span><span class="n">feature_selection_method_name</span><span class="si">}</span><span class="s2"> stored in DB&quot;</span><span class="p">)</span>
-            <span class="k">del</span> <span class="n">converted_raw_selection_result</span>
-            <span class="k">del</span> <span class="n">selection_result_list</span>
-            <span class="k">del</span> <span class="n">saved_data</span>
-            <span class="c1"># close the connection to MongoDB</span>
-            <span class="c1"># client.close()</span>
+        <span class="c1"># # store data in mongodb</span>
+        <span class="c1"># if settings[&quot;env&quot;] == &quot;cluster&quot;:</span>
+        <span class="c1">#     converted_raw_selection_result = (</span>
+        <span class="c1">#         _convert_raw_selection_result_from_dataframe_to_list(</span>
+        <span class="c1">#             selection_result_list</span>
+        <span class="c1">#         )</span>
+        <span class="c1">#     )</span>
+        <span class="c1">#     assert isinstance(converted_raw_selection_result, List)</span>
+        <span class="c1">#</span>
+        <span class="c1">#     # create experiment</span>
+        <span class="c1">#     experiment = {</span>
+        <span class="c1">#         &quot;experiment_id&quot;: settings[&quot;experiment_id&quot;],</span>
+        <span class="c1">#         &quot;mongodb_settings_id&quot;: settings[&quot;mongodb_id&quot;],</span>
+        <span class="c1">#         feature_selection_method_name: converted_raw_selection_result,</span>
+        <span class="c1">#     }</span>
+        <span class="c1">#     saved_data = save_experiment_in_mongodb(</span>
+        <span class="c1">#         mongo_client=MongoClient(settings[&quot;mongo_db_url&quot;]),</span>
+        <span class="c1">#         document_dict=experiment,</span>
+        <span class="c1">#     )</span>
+        <span class="c1">#</span>
+        <span class="c1">#     # test loaded data</span>
+        <span class="c1">#     for key in saved_data:</span>
+        <span class="c1">#         if key == &quot;experiment_id&quot;:</span>
+        <span class="c1">#             assert saved_data[key] == settings[&quot;experiment_id&quot;]</span>
+        <span class="c1">#         if key == &quot;mongodb_settings_id&quot;:</span>
+        <span class="c1">#             assert saved_data[key] == settings[&quot;mongodb_id&quot;]</span>
+        <span class="c1">#         if key == feature_selection_method_name:</span>
+        <span class="c1">#             assert converted_raw_selection_result == saved_data[key]</span>
+        <span class="c1">#             if &quot;Reverse&quot; in feature_selection_method_name:</span>
+        <span class="c1">#                 assert isinstance(saved_data[key][0], List)</span>
+        <span class="c1">#                 # convert back to pandas</span>
+        <span class="c1">#                 new_list = []</span>
+        <span class="c1">#                 for cv_iteration_result in saved_data[key]:</span>
+        <span class="c1">#                     new_list.append(pd.DataFrame(cv_iteration_result))</span>
+        <span class="c1">#                 check_feature_selection_result.check_feature_selection_result_outer_cv(</span>
+        <span class="c1">#                     new_list, feature_selection_method_name, settings</span>
+        <span class="c1">#                 )</span>
+        <span class="c1">#     print(f&quot;Result {feature_selection_method_name} stored in DB&quot;)</span>
+        <span class="c1">#     del converted_raw_selection_result</span>
+        <span class="c1">#     del selection_result_list</span>
+        <span class="c1">#     del saved_data</span>
+        <span class="c1">#     # close the connection to MongoDB</span>
+        <span class="c1">#     # client.close()</span>
 
         <span class="c1"># pickle data</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;data_storage&quot;</span><span class="p">][</span><span class="s2">&quot;path_selection_results&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;data_storage&quot;</span><span class="p">][</span><span class="s2">&quot;path_selection_results&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;cwd_path&#39;</span><span class="p">]</span><span class="si">}{</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;data_storage&#39;</span><span class="p">][</span><span class="s1">&#39;path_selection_results&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">_experiment</span><span class="si">{</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;experiment_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">_raw_selection_</span><span class="si">{</span><span class="n">feature_selection_method_name</span><span class="si">}</span><span class="s2">.pkl&quot;</span>
-            <span class="p">)</span>
-            <span class="n">pickled_data</span> <span class="o">=</span> <span class="n">pickle_data</span><span class="p">(</span><span class="n">selection_result_list</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-            <span class="n">check_feature_selection_result</span><span class="o">.</span><span class="n">check_feature_selection_result_outer_cv</span><span class="p">(</span>
-                <span class="n">pickled_data</span><span class="p">,</span> <span class="n">feature_selection_method_name</span><span class="p">,</span> <span class="n">settings</span>
-            <span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Pickled </span><span class="si">{</span><span class="n">feature_selection_method_name</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-            <span class="k">del</span> <span class="n">selection_result_list</span>
-            <span class="k">del</span> <span class="n">pickled_data</span></div>
+        <span class="c1"># else:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;data_storage&quot;</span><span class="p">][</span><span class="s2">&quot;path_selection_results&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;data_storage&quot;</span><span class="p">][</span><span class="s2">&quot;path_selection_results&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;cwd_path&#39;</span><span class="p">]</span><span class="si">}{</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;data_storage&#39;</span><span class="p">][</span><span class="s1">&#39;path_selection_results&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">_experiment</span><span class="si">{</span><span class="n">settings</span><span class="p">[</span><span class="s1">&#39;experiment_id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">_raw_selection_</span><span class="si">{</span><span class="n">feature_selection_method_name</span><span class="si">}</span><span class="s2">.pkl&quot;</span>
+        <span class="p">)</span>
+        <span class="n">pickled_data</span> <span class="o">=</span> <span class="n">pickle_data</span><span class="p">(</span><span class="n">selection_result_list</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="n">check_feature_selection_result</span><span class="o">.</span><span class="n">check_feature_selection_result_outer_cv</span><span class="p">(</span>
+            <span class="n">pickled_data</span><span class="p">,</span> <span class="n">feature_selection_method_name</span><span class="p">,</span> <span class="n">settings</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Pickled </span><span class="si">{</span><span class="n">feature_selection_method_name</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">del</span> <span class="n">selection_result_list</span>
+        <span class="k">del</span> <span class="n">pickled_data</span></div>
 
 
 <div class="viewcode-block" id="save_duration_and_power_consumption"><a class="viewcode-back" href="../../code-doc/main.html#ensemble_feature_selection_benchmark.store_experiments.save_duration_and_power_consumption">[docs]</a><span class="k">def</span> <span class="nf">save_duration_and_power_consumption</span><span class="p">(</span>
