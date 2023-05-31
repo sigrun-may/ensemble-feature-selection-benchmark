@@ -126,67 +126,67 @@ def save_raw_selection_result_per_method(
     )
 
     if settings.store_result:
-        # store data in mongodb
-        if settings["env"] == "cluster":
-            converted_raw_selection_result = (
-                _convert_raw_selection_result_from_dataframe_to_list(
-                    selection_result_list
-                )
-            )
-            assert isinstance(converted_raw_selection_result, List)
-
-            # create experiment
-            experiment = {
-                "experiment_id": settings["experiment_id"],
-                "mongodb_settings_id": settings["mongodb_id"],
-                feature_selection_method_name: converted_raw_selection_result,
-            }
-            saved_data = save_experiment_in_mongodb(
-                mongo_client=MongoClient(settings["mongo_db_url"]),
-                document_dict=experiment,
-            )
-
-            # test loaded data
-            for key in saved_data:
-                if key == "experiment_id":
-                    assert saved_data[key] == settings["experiment_id"]
-                if key == "mongodb_settings_id":
-                    assert saved_data[key] == settings["mongodb_id"]
-                if key == feature_selection_method_name:
-                    assert converted_raw_selection_result == saved_data[key]
-                    if "Reverse" in feature_selection_method_name:
-                        assert isinstance(saved_data[key][0], List)
-                        # convert back to pandas
-                        new_list = []
-                        for cv_iteration_result in saved_data[key]:
-                            new_list.append(pd.DataFrame(cv_iteration_result))
-                        check_feature_selection_result.check_feature_selection_result_outer_cv(
-                            new_list, feature_selection_method_name, settings
-                        )
-            print(f"Result {feature_selection_method_name} stored in DB")
-            del converted_raw_selection_result
-            del selection_result_list
-            del saved_data
-            # close the connection to MongoDB
-            # client.close()
+        # # store data in mongodb
+        # if settings["env"] == "cluster":
+        #     converted_raw_selection_result = (
+        #         _convert_raw_selection_result_from_dataframe_to_list(
+        #             selection_result_list
+        #         )
+        #     )
+        #     assert isinstance(converted_raw_selection_result, List)
+        #
+        #     # create experiment
+        #     experiment = {
+        #         "experiment_id": settings["experiment_id"],
+        #         "mongodb_settings_id": settings["mongodb_id"],
+        #         feature_selection_method_name: converted_raw_selection_result,
+        #     }
+        #     saved_data = save_experiment_in_mongodb(
+        #         mongo_client=MongoClient(settings["mongo_db_url"]),
+        #         document_dict=experiment,
+        #     )
+        #
+        #     # test loaded data
+        #     for key in saved_data:
+        #         if key == "experiment_id":
+        #             assert saved_data[key] == settings["experiment_id"]
+        #         if key == "mongodb_settings_id":
+        #             assert saved_data[key] == settings["mongodb_id"]
+        #         if key == feature_selection_method_name:
+        #             assert converted_raw_selection_result == saved_data[key]
+        #             if "Reverse" in feature_selection_method_name:
+        #                 assert isinstance(saved_data[key][0], List)
+        #                 # convert back to pandas
+        #                 new_list = []
+        #                 for cv_iteration_result in saved_data[key]:
+        #                     new_list.append(pd.DataFrame(cv_iteration_result))
+        #                 check_feature_selection_result.check_feature_selection_result_outer_cv(
+        #                     new_list, feature_selection_method_name, settings
+        #                 )
+        #     print(f"Result {feature_selection_method_name} stored in DB")
+        #     del converted_raw_selection_result
+        #     del selection_result_list
+        #     del saved_data
+        #     # close the connection to MongoDB
+        #     # client.close()
 
         # pickle data
-        else:
-            assert isinstance(settings["data_storage"]["path_selection_results"], str)
-            assert len(settings["data_storage"]["path_selection_results"]) > 0
-            path = (
-                f"{settings['cwd_path']}{settings['data_storage']['path_selection_results']}"
-                f"/{settings['data']['name']}_experiment{settings['experiment_id']}_raw_selection_{feature_selection_method_name}.pkl"
-            )
-            pickled_data = pickle_data(selection_result_list, path)
-            check_feature_selection_result.check_feature_selection_result_outer_cv(
-                pickled_data, feature_selection_method_name, settings
-            )
-            print(
-                f"Pickled {feature_selection_method_name} at {datetime.datetime.now()}"
-            )
-            del selection_result_list
-            del pickled_data
+        # else:
+        assert isinstance(settings["data_storage"]["path_selection_results"], str)
+        assert len(settings["data_storage"]["path_selection_results"]) > 0
+        path = (
+            f"{settings['cwd_path']}{settings['data_storage']['path_selection_results']}"
+            f"/{settings['data']['name']}_experiment{settings['experiment_id']}_raw_selection_{feature_selection_method_name}.pkl"
+        )
+        pickled_data = pickle_data(selection_result_list, path)
+        check_feature_selection_result.check_feature_selection_result_outer_cv(
+            pickled_data, feature_selection_method_name, settings
+        )
+        print(
+            f"Pickled {feature_selection_method_name} at {datetime.datetime.now()}"
+        )
+        del selection_result_list
+        del pickled_data
 
 
 def save_duration_and_power_consumption(
