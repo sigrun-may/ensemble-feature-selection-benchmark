@@ -63,7 +63,7 @@ class CorrelationMatrixCalculatorBaseClass(ABC):
 
 
 class PreprocessingBaseClass(ABC):
-    def __init__(self, _power_transformer, _correlation_matrix_calculator):
+    def __init__(self, _power_transformer, _correlation_matrix_calculator=None):
         self.power_transformer = _power_transformer
         self.correlation_matrix_calculator = _correlation_matrix_calculator
 
