@@ -280,7 +280,7 @@ class YeoJohnsonC(PowerTransformerBaseClass):
         counter = 0
         for i, (column_name, test_column) in enumerate(test_pd.items()):
             transformed_test_np[:, i] = yeojohnson(test_column.values, lambdas[i])
-            skews_c.append(skew(transformed_test_np[:, i]))
+            # skews_c.append(skew(transformed_test_np[:, i]))
             # _, scipy_optimized_lambda = yeojohnson(train_np[:, i])
             # transformed_test_np_stats[:, i] = yeojohnson(
             #     test_column.values, scipy_optimized_lambda
