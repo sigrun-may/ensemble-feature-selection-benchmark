@@ -392,13 +392,15 @@ def preprocess_data() -> PreprocessedData:
     else:
         # data preprocessing
         start_preprocessing = datetime.now()
+        if settings["preprocessing"]["train_correlation_method"]:
+            correlation_matrix_calculator = str_to_class(settings["preprocessing"]["train_correlation_method"])
+        else:
+            correlation_matrix_calculator = None
         preprocessor = str_to_class(
             settings["preprocessing"]["preprocessing_parallel"]
         )(
             _power_transformer=str_to_class(settings["preprocessing"]["yeo_johnson"]),
-            _correlation_matrix_calculator=str_to_class(
-                settings["preprocessing"]["train_correlation_method"]
-            ),
+            _correlation_matrix_calculator=correlation_matrix_calculator,
         )
         preprocessed_data = preprocessor.get_preprocessed_data_splits(
             preprocessor, data_df
