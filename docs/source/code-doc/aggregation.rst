@@ -3,6 +3,14 @@
 :mod:`~ensemble_feature_selection_benchmark.aggregation`
 ========================================================
 
+aggregation_methods
+-------------------
+
 .. automodule:: ensemble_feature_selection_benchmark.aggregation.aggregation_methods
+
+aggregation
+-----------
+
 .. automodule:: ensemble_feature_selection_benchmark.aggregation.aggregation
-.. automodule:: ensemble_feature_selection_benchmark.aggregation.result
+
+

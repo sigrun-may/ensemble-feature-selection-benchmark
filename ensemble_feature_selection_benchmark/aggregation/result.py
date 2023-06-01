@@ -2,6 +2,8 @@
 # This software is distributed under the terms of the MIT license
 # which is available at https://opensource.org/licenses/MIT
 
+"""Working on results."""
+
 import logging
 from collections import defaultdict
 from typing import Dict, List
@@ -11,8 +13,6 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
 from ensemble_feature_selection_benchmark import check_feature_selection_result
-
-"""Working on results."""
 
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.DEBUG)

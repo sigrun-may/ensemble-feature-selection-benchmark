@@ -20,7 +20,7 @@ from typing import List
 
 # -- Project information -----------------------------------------------------
 
-project = "ensemble_feature_selection_benchmark"
+project = "ensemble feature selection benchmark"
 copyright = "2023 Sigrun May, Ostfalia Hochschule für angewandte Wissenschaften"
 author = "Sigrun May"
 
