@@ -17,6 +17,17 @@ _logger = logging.getLogger(__name__)
 
 
 def train_random_forest(train_df, params):
+    """Trains the Random Forest model using sklearn.
+
+    Args:
+        train_df: DataFrame containing the data to train the Random Forest.
+        params: Dictionary containing the parameters the model should be trained with.
+
+    Returns:
+        A trained Random Forest model.
+
+    """
+
     # prepare train data
     y_train = train_df["label"].values
     x_train = train_df.loc[:, train_df.columns != "label"]
@@ -38,6 +49,22 @@ def train_random_forest(train_df, params):
 
 
 def calculate_score(data_inner_cv_iteration, parameters):
+    """Trains a Random Forest Model and calculates scores of this model.
+
+    After training the model this function calculates the mean accuracy, the feature importances and shap-values of
+    this model.
+
+    Args:
+        data_inner_cv_iteration: DataSplit containing the DataFrame the model to be scored should be trained and
+            tested on.
+        parameters: Dictionary containing the parameters the model to be scored should be trained with.
+
+    Returns:
+        Mean Accuracy of the model.
+        A list containing the feature importances (here macro feature importances).
+        A list containing the models shap values.
+
+    """
     train_df, validation_df, _ = data_inner_cv_iteration
 
     # prepare validation data
@@ -62,6 +89,19 @@ def calculate_score(data_inner_cv_iteration, parameters):
 
 
 def calculate_micro_feature_importance(train_data_outer_cv_df, hyperparameters_dict):
+    """Calculates the micro feature importances using Random Forest.
+
+    Args:
+        train_data_outer_cv_df: DataFrame to train the Random Forest model on to calculate the micro feature importance.
+        hyperparameters_dict: Dictionary containing the hyperparameters the model should be trained with.
+
+    Returns:
+        List containing the micro feature importance per feature.
+
+    Raises:
+        AssertionError: If no hyperparameters are given.
+
+    """
     assert len(hyperparameters_dict) > 0
     # build model for micro_feature_importance
     micro_model = train_random_forest(train_data_outer_cv_df, hyperparameters_dict)

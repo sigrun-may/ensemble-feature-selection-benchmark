@@ -36,6 +36,7 @@ else:
 
 # disable data storage to avoid starting a new experiment
 file_name = "../ensemble-feature-selection-benchmark/settings.toml"
+# file_name = "../settings.toml"
 with open(file_name, mode="rt", encoding="utf-8") as fp:
     config_toml_file = tomlkit.load(fp)
 config_toml_file["store_result"] = False

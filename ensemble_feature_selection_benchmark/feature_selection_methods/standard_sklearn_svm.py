@@ -17,6 +17,16 @@ _logger = logging.getLogger(__name__)
 
 
 def train_svm(train_df, parameters):
+    """Trains the Support Vector Machine model using sklearn and a linear kernel.
+
+        Args:
+            train_df: DataFrame containing the data to train the svm.
+            params: Dictionary containing the parameters the model should be trained with.
+
+        Returns:
+            A trained support vector machine model.
+
+        """
     # prepare train data
     y_train = train_df["label"].values
     x_train = train_df.loc[:, train_df.columns != "label"]
@@ -38,6 +48,21 @@ def train_svm(train_df, parameters):
 
 
 def calculate_score(data_inner_cv_iteration, parameters):
+    """Trains a SVM model and calculates scores of this model.
+
+    After training the model this function calculates the mean accuracy, the feature weights and the models shap values.
+
+    Args:
+        data_inner_cv_iteration: DataSplit containing the DataFrame the model to be scored should be trained and
+            tested on.
+        parameters: Dictionary containing the parameters the model should be trained with.
+
+    Returns:
+        Mean Accuracy of the model.
+        A list containing the feature weights (here macro feature importances).
+        A list containing the models shap values.
+
+    """
     train_df, validation_df, _ = data_inner_cv_iteration
 
     # prepare validation data
@@ -67,6 +92,19 @@ def calculate_score(data_inner_cv_iteration, parameters):
 
 
 def calculate_micro_feature_importance(train_data_outer_cv_df, hyperparameters_dict):
+    """Calculates the micro feature importances using SVM.
+
+    Args:
+        train_data_outer_cv_df: DataFrame to train the SVM model on to calculate the micro feature importance.
+        hyperparameters_dict: Dictionary containing the hyperparameters the model should be trained with.
+
+    Returns:
+        List containing the micro feature importance per feature.
+
+    Raises:
+        AssertionError: If no hyperparameters are given.
+
+    """
     assert len(hyperparameters_dict) > 0
     # build model for micro_feature_importance
     micro_model = train_svm(train_data_outer_cv_df, hyperparameters_dict)

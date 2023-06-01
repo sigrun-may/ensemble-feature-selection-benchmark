@@ -19,18 +19,44 @@ _logger = logging.getLogger(__name__)
 
 
 def train_lasso_sklearn(x_train, y_train, parameters):
+    """Trains the Lasso model using sklearn.
+
+    Args:
+        x_train: DataFrame containing the data to train the model excluding the targets.
+        y_train: Array or DataFrame containing the targets for the model fitting.
+        parameters: Dictionary containing the value for the parameter the model should be trained with.
+
+    Returns:
+        A trained Lasso model.
+
+    """
     with parallel_backend(backend="loky", n_jobs=1, inner_max_num_threads=1):
         # build LASSO model
-        lasso = Lasso(  # NOTE: lasso -> model
+        model = Lasso(
             alpha=parameters["alpha"],
             fit_intercept=True,
             positive=False,
         )
-        lasso.fit(np.asfortranarray(x_train), y_train)
-    return lasso
+        model.fit(np.asfortranarray(x_train), y_train)
+    return model
 
 
 def calculate_score(data_inner_cv_iteration, parameters):
+    """Trains a Lasso Regression Model and calculates scores of this model.
+
+    After training the model this function calculates the r2-score, model coefficients (weight vectors) and
+    shap-values of this model.
+
+    Args:
+        data_inner_cv_iteration: DataSplit containing the DataFrame the model to be scored should be trained on.
+        parameters: Dictionary containing the parameters the model to be scored should be trained with.
+
+    Returns:
+        R2-score of the model.
+        A list containing the model coefficients (weight vectors, here macro feature importances).
+        A list containing the models shap values.
+
+    """
     train_df, validation_df, _ = data_inner_cv_iteration
 
     # prepare train data
@@ -60,6 +86,19 @@ def calculate_score(data_inner_cv_iteration, parameters):
 
 
 def calculate_micro_feature_importance(train_data_outer_cv_df, hyperparameters_dict):
+    """Calculates the micro feature importances using Lasso Regression.
+
+    Args:
+        train_data_outer_cv_df:  DataFrame to train the Lasso model on to calculate the micro feature importance.
+        hyperparameters_dict: Dictionary containing the hyperparameter "alpha".
+
+    Returns:
+        List containing the micro feature importance per feature.
+
+    Raises:
+        AssertionError: If no hyperparameters are given.
+
+    """
     # prepare train data
     y_train = train_data_outer_cv_df["label"].values.reshape(-1, 1)
     x_train = train_data_outer_cv_df.loc[:, train_data_outer_cv_df.columns != "label"]

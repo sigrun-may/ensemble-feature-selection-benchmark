@@ -22,6 +22,22 @@ logger.setLevel("ERROR")
 
 
 def calculate_score(data_inner_cv_iteration, parameters):
+    """Trains a LightGBM model and calculates scores of this model.
+
+    After training the model this function calculates the minimal binary log loss, the feature importances and shap-values of
+    this model.
+
+    Args:
+        data_inner_cv_iteration: DataSplit containing the DataFrame the model to be scored should be trained and
+            tested on.
+        parameters: Dictionary containing the parameters the model to be scored should be trained with.
+
+    Returns:
+        Minimal binary log loss.
+        A list containing the feature importances (here macro feature importances).
+        A list containing the models shap values.
+
+    """
     train_df, validation_df, _ = data_inner_cv_iteration
 
     # prepare train data
@@ -62,6 +78,16 @@ def calculate_score(data_inner_cv_iteration, parameters):
 
 
 def calculate_micro_feature_importance(train_data_outer_cv_df, hyperparameters_dict):
+    """Calculates the micro feature importances using LightGBM.
+
+    Args:
+        train_data_outer_cv_df: DataFrame to train the LightGBM model on to calculate the micro feature importance.
+        hyperparameters_dict: Dictionary containing the hyperparameters the model should be trained with.
+
+    Returns:
+        List containing the micro feature importance per feature.
+
+    """
     # prepare train data
     y_train = train_data_outer_cv_df["label"].values
     x_train = train_data_outer_cv_df.loc[:, train_data_outer_cv_df.columns != "label"]
