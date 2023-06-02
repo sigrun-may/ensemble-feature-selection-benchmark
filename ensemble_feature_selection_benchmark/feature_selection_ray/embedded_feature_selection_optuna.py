@@ -90,21 +90,27 @@ def select_features(
     selection_method,
     boosting_type=None,
 ) -> dict:
-    """Select feature subset with given feature selection method.
+    """Selects a feature subset with given feature selection method.
 
     Args:
-        settings_id: ray object id to dynaconf settings object
-        preprocessed_data_id: yj +pearson train data
-        outer_cv_iteration: index of outer cross-validation loop
-        n_trials: number of trials for the hyperparameter optimization for the embedded feature selection
-        direction: direction for optimization -> can be "maximize" or "minimize"
-        selection_method: method for embedded feature selection
+        settings_id: ray object id to dynaconf settings object.
+        preprocessed_data_id: yj +pearson train data.
+        outer_cv_iteration: index of outer cross-validation loop.
+        n_trials: number of trials for the hyperparameter optimization for the embedded feature selection.
+        direction: direction for optimization -> can be "maximize" or "minimize".
+        selection_method: method for embedded feature selection.
         boosting_type: "gbdt", traditional Gradient Boosting Decision Tree, aliases: "gbrt"
                "rf", Random Forest, aliases: "random_forest"
                "extra_trees"
 
+    Returns:
+        selected features + weights
 
-    Returns: selected features + weights
+    Raises:
+        ValueError: If the given selection method is not implemented.
+        AssertionError: If not all scores, shap-values or macro feature importances could be calculated or if
+            typechecks fail.
+
     """
     print(outer_cv_iteration, selection_method.__name__)
 

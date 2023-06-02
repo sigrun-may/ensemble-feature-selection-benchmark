@@ -27,21 +27,57 @@ _logger = logging.getLogger(__name__)
 
 
 def str_to_class(class_name):
+    """Instantiates object from given class name string.
+
+    Args:
+        class_name: Name of class to instantiate.
+
+    Returns:
+        Object of type class_name.
+
+    """
     return getattr(sys.modules[__name__], class_name)
 
 
 class FeatureSelectionBaseClass(ABC):
+    """Base class for feature selection."""
     @staticmethod
     @abstractmethod
     def select_feature_subsets(
         data: PreprocessedData, outer_cv_iteration: int, **kwargs
     ):
+        """Selects a subset of possibly relevant features.
+
+        Args:
+            data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
+            outer_cv_iteration: Index of outer cross-validation loop.
+            **kwargs: Additional arguments.
+
+        Returns:
+            Selected feature subsets.
+
+        """
         pass
 
 
 class LassoSklearn(FeatureSelectionBaseClass):
+    """Class for lasso sklearn feature selection."""
     @staticmethod
     def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
+        """Selects a subset of possibly relevant features with lasso.
+
+        Args:
+            data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
+            outer_cv_iteration: Index of outer cross-validation loop.
+            **kwargs: settings_id -> ray object id for dynaconf settings.
+
+        Returns:
+            Selected feature subsets (micro/ macro coefficients and shap values).
+
+        Raises:
+            AssertionError: If settings_id not given.
+
+        """
         assert len(kwargs) == 1
         assert "settings_id" in kwargs
         settings_id = kwargs["settings_id"]
@@ -74,8 +110,23 @@ class LassoSklearn(FeatureSelectionBaseClass):
 
 
 class RandomForestSklearn(FeatureSelectionBaseClass):
+    """Class for Random Forest sklearn feature selection."""
     @staticmethod
     def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
+        """Selects a subset of possibly relevant features with random forest.
+
+        Args:
+            data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
+            outer_cv_iteration: Index of outer cross-validation loop.
+            **kwargs: settings_id -> ray object id for dynaconf settings.
+
+        Returns:
+            Selected feature subsets (micro/ macro coefficients and shap values).
+
+        Raises:
+            AssertionError: If settings_id not given.
+
+        """
         assert len(kwargs) == 1
         assert "settings_id" in kwargs
         settings_id = kwargs["settings_id"]
@@ -101,8 +152,23 @@ class RandomForestSklearn(FeatureSelectionBaseClass):
 
 
 class SVC(FeatureSelectionBaseClass):
+    """Class for Support Vector Classifier sklearn feature selection."""
     @staticmethod
     def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
+        """Selects a subset of possibly relevant features with support vector classifier.
+
+        Args:
+            data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
+            outer_cv_iteration: Index of outer cross-validation loop.
+            **kwargs: settings_id -> ray object id for dynaconf settings.
+
+        Returns:
+            Selected feature subsets (micro/ macro coefficients).
+
+        Raises:
+            AssertionError: If settings_id not given.
+
+        """
         assert len(kwargs) == 1
         assert "settings_id" in kwargs
         settings_id = kwargs["settings_id"]
@@ -128,19 +194,22 @@ class SVC(FeatureSelectionBaseClass):
 
 
 class RandomForestLightGBM(FeatureSelectionBaseClass):
-    """Lightgbm random forest feature selection."""
+    """Class for LightGBM Random Forest feature selection."""
 
     @staticmethod
     def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
-        """Select subset of possibly relevant features with lightgbm random forest.
+        """Selects a subset of possibly relevant features with LightGBM Random Forest.
 
         Args:
             data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
             outer_cv_iteration: Index of outer cross-validation loop.
-            **kwargs: settings_id -> ray object id for dynaconf settings
+            **kwargs: settings_id -> ray object id for dynaconf settings.
 
         Returns:
             Selected feature subsets (micro/ macro coefficients and shap values).
+
+        Raises:
+            AssertionError: If settings_id not given.
 
         """
         assert len(kwargs) == 1
@@ -170,19 +239,22 @@ class RandomForestLightGBM(FeatureSelectionBaseClass):
 
 
 class GradientBoostingDecisionTreeLightGBM(FeatureSelectionBaseClass):
-    """Lightgbm feature selection."""
+    """Class for LightGBM gradient boosting decision tree feature selection."""
 
     @staticmethod
     def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
-        """Select subset of possibly relevant features with lightgbm.
+        """Selects a subset of possibly relevant features with lightgbm.
 
         Args:
             data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
             outer_cv_iteration: Index of outer cross-validation loop.
-            **kwargs: settings_id -> ray object id for dynaconf settings
+            **kwargs: settings_id -> ray object id for dynaconf settings.
 
         Returns:
             Selected feature subsets (micro/ macro coefficients and shap values).
+
+        Raises:
+            AssertionError: If settings_id not given.
 
         """
         assert len(kwargs) == 1
@@ -212,19 +284,22 @@ class GradientBoostingDecisionTreeLightGBM(FeatureSelectionBaseClass):
 
 
 class ExtraTreesLightGBM(FeatureSelectionBaseClass):
-    """Lightgbm extra trees feature selection."""
+    """Class for LightGBM extra trees feature selection."""
 
     @staticmethod
     def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
-        """Select subset of possibly relevant features with lightgbm extra trees.
+        """Selects a subset of possibly relevant features with lightgbm extra trees.
 
         Args:
             data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
             outer_cv_iteration: Index of outer cross-validation loop.
-            **kwargs: settings_id -> ray object id for dynaconf settings
+            **kwargs: settings_id -> ray object id for dynaconf settings.
 
         Returns:
             Selected feature subsets (micro/ macro coefficients and shap values).
+
+        Raises:
+            AssertionError: If settings_id not given.
 
         """
         assert len(kwargs) == 1
@@ -281,8 +356,23 @@ class ExtraTreesLightGBM(FeatureSelectionBaseClass):
 
 
 class ReverseLassoSklearn(FeatureSelectionBaseClass):
+    """Class for reverse lasso sklearn feature selection."""
     @staticmethod
     def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
+        """Selects a subset of possibly relevant features with reverse lasso.
+
+        Args:
+            data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
+            outer_cv_iteration: Index of outer cross-validation loop.
+            **kwargs: settings_id -> ray object id for dynaconf settings.
+
+        Returns:
+            Results for labeled and unlabeled training.
+
+        Raises:
+            AssertionError: If settings_id not given.
+
+        """
         assert len(kwargs) == 1
         assert "settings_id" in kwargs
         settings_id = kwargs["settings_id"]

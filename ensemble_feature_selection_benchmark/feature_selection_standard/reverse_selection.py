@@ -171,7 +171,7 @@ def _optimize(
 def labeled_and_unlabeled_training(
     preprocessed_data, selection_method, direction, outer_cv_iteration
 ) -> pd.DataFrame:
-    """Calculate validation metrics with labeled and unlabeled training data for reverse feature selection.
+    """Calculates validation metrics with labeled and unlabeled training data for reverse feature selection.
 
     Args:
         preprocessed_data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
@@ -181,6 +181,10 @@ def labeled_and_unlabeled_training(
 
     Returns:
         Results for labeled and unlabeled training.
+
+    Raises:
+        AssertionError: If validation metrics not calculated for every feature.
+
     """
     labeled_feature_names = preprocessed_data.outer_preprocessed_data_splits[
         0

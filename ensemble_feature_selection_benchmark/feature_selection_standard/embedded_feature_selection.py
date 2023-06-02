@@ -61,7 +61,7 @@ def select_features(
     selection_method,
     boosting_type=None,
 ) -> dict:
-    """Select feature subset with given feature selection method.
+    """Selects a feature subset with given feature selection method.
 
     Args:
         preprocessed_data: yj +pearson train data
@@ -73,7 +73,13 @@ def select_features(
                        "rf", Random Forest, aliases: "random_forest"
                        "extra_trees"
 
-    Returns: selected features + weights
+    Returns:
+        selected features + weights
+
+    Raises:
+        ValueError: If the given selection method is not implemented.
+        AssertionError: If not all scores, shap-values or macro feature importances could be calculated.
+
     """
 
     def optuna_objective(trial):

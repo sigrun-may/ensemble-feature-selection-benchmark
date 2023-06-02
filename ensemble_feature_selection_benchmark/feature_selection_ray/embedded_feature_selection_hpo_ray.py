@@ -22,6 +22,26 @@ def get_results(
     selection_method,
     boosting_type=None,
 ):
+    """Calculates the results of the experiment.
+
+    Args:
+        settings_id: ray object id to dynaconf settings object.
+        preprocessed_data_id: yj +pearson train data.
+        outer_cv_iteration: index of outer cross-validation loop.
+        n_trials: number of trials for the hyperparameter optimization for the embedded feature selection.
+        direction: direction for optimization -> can be "maximize" or "minimize".
+        selection_method: method for embedded feature selection.
+        boosting_type: "gbdt", traditional Gradient Boosting Decision Tree, aliases: "gbrt"
+               "rf", Random Forest, aliases: "random_forest"
+               "extra_trees"
+
+    Returns:
+        The results of the experiment.
+
+    Raises:
+        ValueError: If the given selection method is not implemented.
+
+    """
     # define an objective function
     def _objective(config):
         scores_list = []
@@ -111,6 +131,26 @@ def select_features(
     selection_method,
     boosting_type=None,
 ) -> dict:
+    """Selects a feature subset with given feature selection method.
+
+    Args:
+        settings_id: ray object id to dynaconf settings object.
+        preprocessed_data_id: yj +pearson train data.
+        outer_cv_iteration: index of outer cross-validation loop.
+        n_trials: number of trials for the hyperparameter optimization for the embedded feature selection.
+        direction: direction for optimization -> can be "maximize" or "minimize".
+        selection_method: method for embedded feature selection.
+        boosting_type: "gbdt", traditional Gradient Boosting Decision Tree, aliases: "gbrt"
+               "rf", Random Forest, aliases: "random_forest"
+               "extra_trees"
+
+    Returns:
+        Dictionary containing results of the experiment.
+
+    Raises:
+        AssertionError: If calculating macro feature importances failed.
+
+    """
     if isinstance(preprocessed_data, ray._raylet.ObjectRef):
         preprocessed_data = ray.get(preprocessed_data)
     if isinstance(

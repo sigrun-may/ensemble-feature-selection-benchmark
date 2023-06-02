@@ -21,11 +21,11 @@ from ensemble_feature_selection_benchmark.feature_selection_standard.feature_sel
 def cross_validate_feature_subsets(
     preprocessed_data: PreprocessedData, feature_selection_method: str
 ):
-    """Outer cross-validation for given feature selection method.
+    """Performs the outer cross-validation for given feature selection method.
 
     Args:
-        preprocessed_data:
-        feature_selection_method:
+        preprocessed_data: Preprocessed data to analyse as output from 'preprocessing.py'.
+        feature_selection_method: String containing the feature selection method.
 
     Returns:
         None. Results are stored.
@@ -44,7 +44,7 @@ def cross_validate_feature_subsets(
 
 
 def ensemble_feature_selection(preprocessed_data: PreprocessedData):
-    """Ensemble feature selection.
+    """Performs the ensemble feature selection.
 
     Args:
         preprocessed_data: Preprocessed data to analyse as output from 'preprocessing.py'.

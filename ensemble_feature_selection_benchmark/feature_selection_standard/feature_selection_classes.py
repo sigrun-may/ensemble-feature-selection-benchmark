@@ -27,7 +27,7 @@ _logger = logging.getLogger(__name__)
 
 
 def str_to_class(class_name):
-    """Instantiate object from given class name string.
+    """Instantiates object from given class name string.
 
     Args:
         class_name: Name of class to instantiate.
@@ -47,7 +47,7 @@ class FeatureSelectionBaseClass(ABC):
     def select_feature_subsets(
         data: PreprocessedData, outer_cv_iteration: int, **kwargs
     ):
-        """Select subset of possibly relevant features.
+        """Selects a subset of possibly relevant features.
 
         Args:
             data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
@@ -61,13 +61,13 @@ class FeatureSelectionBaseClass(ABC):
 
 
 class LassoSklearn(FeatureSelectionBaseClass):
-    """Lasso sklearn feature selection."""
+    """Class for lasso sklearn feature selection."""
 
     @staticmethod
     def select_feature_subsets(
         data: PreprocessedData, outer_cv_iteration: int, **kwargs
     ):
-        """Select subset of possibly relevant features with lasso.
+        """Selects a subset of possibly relevant features with lasso.
 
         Args:
             data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
@@ -91,13 +91,13 @@ class LassoSklearn(FeatureSelectionBaseClass):
 
 
 class RandomForestSklearn(FeatureSelectionBaseClass):
-    """Random Forest sklearn feature selection."""
+    """Class for Random Forest sklearn feature selection."""
 
     @staticmethod
     def select_feature_subsets(
         data: PreprocessedData, outer_cv_iteration: int, **kwargs
     ):
-        """Select subset of possibly relevant features with random forest.
+        """Selects a subset of possibly relevant features with random forest.
 
         Args:
             data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
@@ -118,13 +118,13 @@ class RandomForestSklearn(FeatureSelectionBaseClass):
 
 
 class SVC(FeatureSelectionBaseClass):
-    """Support Vector Classifier sklearn feature selection."""
+    """Class for Support Vector Classifier sklearn feature selection."""
 
     @staticmethod
     def select_feature_subsets(
         data: PreprocessedData, outer_cv_iteration: int, **kwargs
     ):
-        """Select subset of possibly relevant features with support vector classifier.
+        """Selects a subset of possibly relevant features with support vector classifier.
 
         Args:
             data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
@@ -145,11 +145,11 @@ class SVC(FeatureSelectionBaseClass):
 
 
 class RandomForestLightGBM(FeatureSelectionBaseClass):
-    """Lightgbm random forest feature selection."""
+    """Class for LightGBM Random Forest feature selection.."""
 
     @staticmethod
     def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
-        """Select subset of possibly relevant features with lightgbm random forest.
+        """Selects a subset of possibly relevant features with LightGBM Random Forest.
 
         Args:
             data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
@@ -171,11 +171,11 @@ class RandomForestLightGBM(FeatureSelectionBaseClass):
 
 
 class GradientBoostingDecisionTreeLightGBM(FeatureSelectionBaseClass):
-    """Lightgbm feature selection."""
+    """Class for LightGBM gradient boosting decision tree feature selection."""
 
     @staticmethod
     def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
-        """Select subset of possibly relevant features with lightgbm.
+        """Selects a subset of possibly relevant features with lightgbm.
 
         Args:
             data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
@@ -197,11 +197,11 @@ class GradientBoostingDecisionTreeLightGBM(FeatureSelectionBaseClass):
 
 
 class ExtraTreesLightGBM(FeatureSelectionBaseClass):
-    """Lightgbm extra trees feature selection."""
+    """Class for LightGBM extra trees feature selection."""
 
     @staticmethod
     def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
-        """Select subset of possibly relevant features with lightgbm extra trees.
+        """Selects a subset of possibly relevant features with lightgbm extra trees.
 
         Args:
             data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.
@@ -223,13 +223,13 @@ class ExtraTreesLightGBM(FeatureSelectionBaseClass):
 
 
 class ReverseLassoSklearn(FeatureSelectionBaseClass):
-    """Reverse lasso sklearn feature selection."""
+    """Class for reverse lasso sklearn feature selection."""
 
     @staticmethod
     def select_feature_subsets(
         data: PreprocessedData, outer_cv_iteration: int, **kwargs
     ):
-        """Select subset of possibly relevant features with reverse lasso.
+        """Selects a subset of possibly relevant features with reverse lasso.
 
         Args:
             data: Preprocessed yeo johnson transformed data and corresponding correlation matrices.

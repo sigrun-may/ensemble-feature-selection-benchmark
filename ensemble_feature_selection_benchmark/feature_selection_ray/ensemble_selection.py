@@ -91,7 +91,7 @@ def _remote_parallel_outer_cv(
 
 
 def ensemble_feature_selection(preprocessed_data_id):
-    """Ensemble feature selection.
+    """Performs the ensemble feature selection.
 
     Args:
         preprocessed_data_id: Ids of preprocessed input data in the ray object store.

@@ -176,6 +176,22 @@ def _optimize_evaluation_metric(
 def calculate_labeled_and_unlabeled_validation_metrics(
     settings_id, preprocessed_data_id, selection_method, outer_cv_iteration
 ) -> pd.DataFrame:
+    """Calculates validation metrics with labeled and unlabeled training data for reverse feature selection.
+
+    Args:
+        settings_id: ray object id for dynaconf settings.
+        preprocessed_data_id: ID of the preprocessed yeo johnson transformed data and corresponding
+            correlation matrices.
+        selection_method: Selection method for embedded feature selection.
+        outer_cv_iteration: Index of outer cross-validation loop.
+
+    Returns:
+        Results for labeled and unlabeled training.
+
+    Raises:
+        AssertionError: If validation metrics not calculated for every feature.
+
+    """
     if isinstance(preprocessed_data_id, ray._raylet.ObjectRef):
         preprocessed_data_id = ray.get(preprocessed_data_id)
     if isinstance(
