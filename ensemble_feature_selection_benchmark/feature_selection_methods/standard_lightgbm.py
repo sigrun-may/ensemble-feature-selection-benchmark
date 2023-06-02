@@ -87,6 +87,9 @@ def calculate_micro_feature_importance(train_data_outer_cv_df, hyperparameters_d
     Returns:
         List containing the micro feature importance per feature.
 
+    Raises:
+        AssertionError: If no hyperparameters are given.
+
     """
     # prepare train data
     y_train = train_data_outer_cv_df["label"].values
@@ -94,6 +97,8 @@ def calculate_micro_feature_importance(train_data_outer_cv_df, hyperparameters_d
 
     # create dataset for lightgbm
     lgb_train = lgb.Dataset(x_train, y_train)
+
+    assert len(hyperparameters_dict) > 0
 
     # build model
     model = lgb.train(
