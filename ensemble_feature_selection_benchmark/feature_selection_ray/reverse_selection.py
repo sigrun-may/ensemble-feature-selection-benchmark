@@ -7,6 +7,7 @@
 
 import logging
 import math
+import numpy as np
 from typing import List
 
 import optuna
@@ -254,12 +255,17 @@ def calculate_labeled_and_unlabeled_validation_metrics(
             del labeled_validation_metrics_chunk
             labeled_validation_metrics.extend(loaded_labeled_validation_metrics)
             del loaded_labeled_validation_metrics
-
     assert (
         len(unlabeled_validation_metrics)
         == len(labeled_validation_metrics)
         == len(feature_names)
     )
+    for list_element in unlabeled_validation_metrics:
+        assert isinstance(list_element, float)
+        assert not math.isnan(list_element)
+    for list_element in labeled_validation_metrics:
+        assert isinstance(list_element, float)
+        assert not math.isnan(list_element)
     validation_metrics = pd.DataFrame(
         data=unlabeled_validation_metrics,
         index=feature_names,
