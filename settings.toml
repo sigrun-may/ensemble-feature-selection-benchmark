@@ -151,5 +151,5 @@ path_sqlite_for_optuna = "sqlite:///optuna_test.db"
 level = "DEBUG"
 log_dir = "~/ray_results"
 hpo_reverse = false
-hpo_standard = false
-optuna_trials = false
+hpo_standard = true
+optuna_trials = true
