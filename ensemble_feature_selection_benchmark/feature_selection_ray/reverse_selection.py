@@ -18,7 +18,6 @@ from optuna.samplers import TPESampler
 from sklearn.metrics import r2_score
 from more_itertools import chunked
 
-
 _logger = logging.getLogger(__name__)
 
 
@@ -57,13 +56,13 @@ def _get_train_validation_data(settings, data_split, target_feature, labeled):
 
 
 def _calculate_validation_metric(
-    settings,
-    preprocessed_data,
-    outer_cv_iteration,
-    target_feature,
-    selection_method,
-    labeled,
-    hyperparameters,
+        settings,
+        preprocessed_data,
+        outer_cv_iteration,
+        target_feature,
+        selection_method,
+        labeled,
+        hyperparameters,
 ):
     if isinstance(preprocessed_data, ray._raylet.ObjectRef):
         inner_preprocessed_data_splits_list = ray.get(
@@ -95,7 +94,7 @@ def _calculate_validation_metric(
 
 
 def _optimize_evaluation_metric(
-    settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
+        settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
 ):
     def optuna_objective(trial):
         """Optimize regularization parameter alpha for lasso regression."""
@@ -176,12 +175,12 @@ def _optimize_evaluation_metric(
 
 
 def calculate_labeled_and_unlabeled_validation_metrics(
-    settings_id, preprocessed_data_id, selection_method, outer_cv_iteration
+        settings_id, preprocessed_data_id, selection_method, outer_cv_iteration
 ) -> pd.DataFrame:
     if isinstance(preprocessed_data_id, ray._raylet.ObjectRef):
         preprocessed_data_id = ray.get(preprocessed_data_id)
     if isinstance(
-        preprocessed_data_id.outer_preprocessed_data_splits[0], ray._raylet.ObjectRef
+            preprocessed_data_id.outer_preprocessed_data_splits[0], ray._raylet.ObjectRef
     ):
         labeled_feature_names = ray.get(
             preprocessed_data_id.outer_preprocessed_data_splits[0]
@@ -221,9 +220,10 @@ def calculate_labeled_and_unlabeled_validation_metrics(
                 (
                     labeled,
                     unlabeled,
-                ) = _remote_calculate_validation_metrics_per_feature.options(
-                    memory=0.5 * 1024 * 1024 * 1024
-                ).remote(
+                ) = _remote_calculate_validation_metrics_per_feature(
+                    # ) = _remote_calculate_validation_metrics_per_feature.options(
+                    #     memory=0.5 * 1024 * 1024 * 1024
+                    # ).remote(
                     settings_id,
                     preprocessed_data_id,
                     outer_cv_iteration,
@@ -256,9 +256,9 @@ def calculate_labeled_and_unlabeled_validation_metrics(
             labeled_validation_metrics.extend(loaded_labeled_validation_metrics)
             del loaded_labeled_validation_metrics
     assert (
-        len(unlabeled_validation_metrics)
-        == len(labeled_validation_metrics)
-        == len(feature_names)
+            len(unlabeled_validation_metrics)
+            == len(labeled_validation_metrics)
+            == len(feature_names)
     )
     for list_element in unlabeled_validation_metrics:
         assert isinstance(list_element, float)
@@ -276,7 +276,7 @@ def calculate_labeled_and_unlabeled_validation_metrics(
 
 
 def _calculate_validation_metrics_per_feature(
-    settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
+        settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
 ):
     # optimize hyperparameters with labeled training data
     labeled_validation_metric_value, best_parameters = _optimize_evaluation_metric(
@@ -307,7 +307,7 @@ def _calculate_validation_metrics_per_feature(
 
 @ray.remote(num_returns=2)
 def _remote_calculate_validation_metrics_per_feature(
-    settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
+        settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
 ):
     return _calculate_validation_metrics_per_feature(
         settings,
