@@ -4,6 +4,7 @@
 
 
 """Reverse feature selection for high-dimensional data with tiny sample size."""
+from numbers import Number
 
 import logging
 import math
@@ -146,7 +147,7 @@ def _optimize_evaluation_metric(
         gc_after_trial=True,
     )
     # initialize return values
-    best_trial_value = 0
+    best_trial_value = 0.0
     best_params = {}
     # calculate unlabeled metric for comparison, of labeled result is promising
     if len(study.best_trials) > 0 and study.best_trial.value > 0:
@@ -271,10 +272,10 @@ def calculate_labeled_and_unlabeled_validation_metrics(
             == len(feature_names)
     )
     for list_element in unlabeled_validation_metrics:
-        assert isinstance(list_element, float)
+        assert isinstance(list_element, Number)
         assert not math.isnan(list_element)
     for list_element in labeled_validation_metrics:
-        assert isinstance(list_element, float)
+        assert isinstance(list_element, Number)
         assert not math.isnan(list_element)
     validation_metrics = pd.DataFrame(
         data=unlabeled_validation_metrics,
@@ -308,8 +309,8 @@ def _calculate_validation_metrics_per_feature(
             hyperparameters=best_parameters,
         )
     else:
-        unlabeled_validation_metric_value = 0
-        assert math.isclose(labeled_validation_metric_value, 0)
+        unlabeled_validation_metric_value = 0.0
+        assert math.isclose(labeled_validation_metric_value, 0.0)
         _logger.info("No trial completed")
 
     return labeled_validation_metric_value, unlabeled_validation_metric_value
