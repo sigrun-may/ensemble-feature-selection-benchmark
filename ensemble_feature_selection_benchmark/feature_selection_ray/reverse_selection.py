@@ -223,7 +223,7 @@ def calculate_labeled_and_unlabeled_validation_metrics(
                 ) = _remote_calculate_validation_metrics_per_feature(
                     # ) = _remote_calculate_validation_metrics_per_feature.options(
                     #     memory=0.5 * 1024 * 1024 * 1024
-                    # ).remote(
+                    ).remote(
                     settings_id,
                     preprocessed_data_id,
                     outer_cv_iteration,
