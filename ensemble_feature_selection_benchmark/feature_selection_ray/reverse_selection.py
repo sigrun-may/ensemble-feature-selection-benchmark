@@ -15,6 +15,7 @@ import ray
 from optuna import TrialPruned
 from optuna.samplers import TPESampler
 from sklearn.metrics import r2_score
+from more_itertools import chunked
 
 
 _logger = logging.getLogger(__name__)
@@ -126,7 +127,7 @@ def _optimize_evaluation_metric(
             hyperparameters=hyperparameter_dict,
         )
 
-    study_name = f"lasso_{target_feature}_iteration_{outer_cv_iteration}_{settings.experiment_id}"
+    study_name = f"lasso_{target_feature}_iteration_{outer_cv_iteration}"
     study = optuna.create_study(
         # storage=settings.data_storage.path_sqlite_for_optuna,
         # load_if_exists = True,
@@ -209,35 +210,50 @@ def calculate_labeled_and_unlabeled_validation_metrics(
     del labeled_feature_names
     labeled_validation_metrics = []
     unlabeled_validation_metrics = []
-    for target_feature in feature_names:
-        if settings_id.parallel_processes.reverse_feature_selection > 1:
-            (
-                labeled,
-                unlabeled,
-            ) = _remote_calculate_validation_metrics_per_feature.options(
-                memory=0.5 * 1024 * 1024 * 1024
-            ).remote(
-                settings_id,
-                preprocessed_data_id,
-                outer_cv_iteration,
-                target_feature,
-                selection_method,
-            )
-        else:
-            labeled, unlabeled = _calculate_validation_metrics_per_feature(
-                settings_id,
-                preprocessed_data_id,
-                outer_cv_iteration,
-                target_feature,
-                selection_method,
-            )
-        labeled_validation_metrics.append(labeled)
-        unlabeled_validation_metrics.append(unlabeled)
-        _logger.debug(f"{target_feature} done")
 
-    if settings_id.parallel_processes.reverse_feature_selection > 1:
-        unlabeled_validation_metrics = ray.get(unlabeled_validation_metrics)
-        labeled_validation_metrics = ray.get(labeled_validation_metrics)
+    for batch in chunked(feature_names, settings_id.parallel_processes.reverse_feature_selection):
+        labeled_validation_metrics_chunk = []
+        unlabeled_validation_metrics_chunk = []
+
+        for target_feature in batch:
+            if settings_id.parallel_processes.reverse_feature_selection > 1:
+                (
+                    labeled,
+                    unlabeled,
+                ) = _remote_calculate_validation_metrics_per_feature.options(
+                    memory=0.5 * 1024 * 1024 * 1024
+                ).remote(
+                    settings_id,
+                    preprocessed_data_id,
+                    outer_cv_iteration,
+                    target_feature,
+                    selection_method,
+                )
+            else:
+                labeled, unlabeled = _calculate_validation_metrics_per_feature(
+                    settings_id,
+                    preprocessed_data_id,
+                    outer_cv_iteration,
+                    target_feature,
+                    selection_method,
+                )
+            labeled_validation_metrics_chunk.append(labeled)
+            del labeled
+            unlabeled_validation_metrics_chunk.append(unlabeled)
+            del unlabeled
+            _logger.debug(f"{target_feature} done")
+
+        if settings_id.parallel_processes.reverse_feature_selection > 1:
+            # delete object ids from ray to free memory
+            loaded_unlabeled_validation_metrics = ray.get(unlabeled_validation_metrics_chunk)
+            del unlabeled_validation_metrics_chunk
+            unlabeled_validation_metrics.extend(loaded_unlabeled_validation_metrics)
+            del loaded_unlabeled_validation_metrics
+
+            loaded_labeled_validation_metrics = ray.get(labeled_validation_metrics_chunk)
+            del labeled_validation_metrics_chunk
+            labeled_validation_metrics.extend(loaded_labeled_validation_metrics)
+            del loaded_labeled_validation_metrics
 
     assert (
         len(unlabeled_validation_metrics)
