@@ -22,10 +22,9 @@ _logger = logging.getLogger(__name__)
 def remote_calculate_score(
     selection_method, data_id_inner_cv_iteration, hyperparameter_dict
 ):
-    score, coefficients_list, shap_list = selection_method.calculate_score(
+    return selection_method.calculate_score(
         data_id_inner_cv_iteration, hyperparameter_dict
     )
-    return score, coefficients_list, shap_list
 
 
 def _set_results(
@@ -72,6 +71,7 @@ def _set_results(
         result_dict["macro_feature_importances"] = study.best_trial.user_attrs[
             "macro_feature_importances"
         ]
+        del study
     else:
         _logger.info(
             "No trial was completed within the hyperparameter optimization! "
@@ -117,8 +117,15 @@ def select_features(
             }
         elif "random_forest" in selection_method.__name__:
             hyperparameter_dict = {
-                "n_estimators": trial.suggest_int("n_estimators", 1, 150),
                 "random_state": 42,
+                "criterion": "entropy",
+                "max_depth": trial.suggest_int("max_depth", 2, 6),
+                "min_samples_leaf": trial.suggest_int(
+                    "min_samples_leaf",
+                    2,
+                    math.floor(settings_id.data.number_of_samples / 2),
+                ),
+                "n_jobs": settings_id.parallel_processes.n_jobs_training,
             }
         elif "svm" in selection_method.__name__:
             hyperparameter_dict = {
@@ -228,9 +235,12 @@ def select_features(
         for data_id_inner_cv_iteration in preprocessed_data_inner_cv_id_list:
             # parallel inner cross validation
             if settings_id.parallel_processes.inner_cv > 1:
-                score, coefficients_list, shap_list = remote_calculate_score.options(
-                    memory=0.5 * 1024 * 1024 * 1024
-                ).remote(
+                # score, coefficients_list, shap_list = remote_calculate_score.options(
+                #     memory=0.5 * 1024 * 1024 * 1024
+                # ).remote(
+                #     selection_method, data_id_inner_cv_iteration, hyperparameter_dict
+                # )
+                score, coefficients_list, shap_list = remote_calculate_score.remote(
                     selection_method, data_id_inner_cv_iteration, hyperparameter_dict
                 )
             # serial inner cross validation
@@ -241,6 +251,9 @@ def select_features(
             coefficients_lists.append(coefficients_list)
             scores.append(score)
             shap_values_list.append(shap_list)
+            del coefficients_list
+            del score
+            del shap_list
         assert (
             len(coefficients_lists)
             == len(scores)
