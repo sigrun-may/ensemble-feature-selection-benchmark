@@ -248,14 +248,15 @@ class ReverseLassoSklearn(FeatureSelectionBaseClass):
         )
 
 
-# class ReverseRandomForest(FeatureSelectionBaseClass):
-#     @staticmethod
-#     def select_feature_subsets(data: PreprocessedData, outer_cv_iteration: int, target=None):
-#         return reverse_selection.calculate_labeled_and_unlabeled_validation_metrics(
-#             preprocessed_data=data,
-#             selection_method=reverse_selection_methods.train_random_forest_optuna,
-#             outer_cv_iteration=outer_cv_iteration,
-#         )
+class ReverseRandomForestSklearn(FeatureSelectionBaseClass):
+    @staticmethod
+    def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
+        return reverse_selection.labeled_and_unlabeled_training(
+            preprocessed_data=data,
+            selection_method=standard_sklearn_random_forest.train_random_forest_regressor,
+            direction="maximize",  # maximizing r2 metric
+            outer_cv_iteration=outer_cv_iteration,
+        )
 
 
 # class HiLassoOptuna(FeatureSelectionBaseClass):
