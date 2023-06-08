@@ -57,13 +57,13 @@ def _get_train_validation_data(settings, data_split, target_feature, labeled):
 
 
 def _calculate_validation_metric(
-        settings,
-        preprocessed_data,
-        outer_cv_iteration,
-        target_feature,
-        selection_method,
-        labeled,
-        hyperparameters,
+    settings,
+    preprocessed_data,
+    outer_cv_iteration,
+    target_feature,
+    selection_method,
+    labeled,
+    hyperparameters,
 ):
     if isinstance(preprocessed_data, ray._raylet.ObjectRef):
         inner_preprocessed_data_splits_list = ray.get(
@@ -83,10 +83,19 @@ def _calculate_validation_metric(
         x_train, y_train, x_validation, y_validation = _get_train_validation_data(
             settings, data_split, target_feature, labeled
         )
-        model = selection_method(x_train, y_train, parameters=hyperparameters)
+        model = selection_method(x_train, y_train, hyperparameters)
         # terminate trial, if label was not selected for reverse feature selection
-        if labeled and math.isclose(model.coef_[x_train.columns.get_loc("label")], 0):
-            raise TrialPruned
+        if labeled:
+            if (
+                "lasso" in selection_method.__name__
+                and math.isclose(model.coef_[x_train.columns.get_loc("label")], 0.0)
+            ) or (
+                "andom" in selection_method.__name__
+                and math.isclose(
+                    model.feature_importances_[x_train.columns.get_loc("label")], 0.0
+                )
+            ):
+                raise TrialPruned
 
         predicted_y_validation = model.predict(x_validation)
         predicted_y.extend(predicted_y_validation)
@@ -95,7 +104,7 @@ def _calculate_validation_metric(
 
 
 def _optimize_evaluation_metric(
-        settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
+    settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
 ):
     def optuna_objective(trial):
         """Optimize regularization parameter alpha for lasso regression."""
@@ -116,6 +125,18 @@ def _optimize_evaluation_metric(
             hyperparameter_dict = {
                 "alpha": trial.suggest_float("alpha", 0.01, 1.0, log=True)
             }
+        elif "random_forest" in selection_method.__name__:
+            hyperparameter_dict = {
+                "random_state": 42,
+                "criterion": "absolute_error",
+                "max_depth": trial.suggest_int("max_depth", 2, 6),
+                "min_samples_leaf": trial.suggest_int(
+                    "min_samples_leaf",
+                    2,
+                    math.floor(settings.data.number_of_samples / 2),
+                ),
+                "n_jobs": 1,
+            }
         else:
             raise ValueError("No valid selection method for reverse feature selection")
         return _calculate_validation_metric(
@@ -128,6 +149,13 @@ def _optimize_evaluation_metric(
             hyperparameters=hyperparameter_dict,
         )
 
+    if "lasso" in selection_method.__name__:
+        n_trials = settings.reverse_fs_lasso_parameter.n_trials
+        n_startup_trials = settings.reverse_fs_lasso_parameter.n_startup_trials
+    else:
+        n_trials = settings.reverse_fs_random_forest_parameter.n_trials
+        n_startup_trials = settings.reverse_fs_random_forest_parameter.n_startup_trials
+
     study_name = f"lasso_{target_feature}_iteration_{outer_cv_iteration}"
     study = optuna.create_study(
         # storage=settings.data_storage.path_sqlite_for_optuna,
@@ -135,14 +163,14 @@ def _optimize_evaluation_metric(
         study_name=study_name,
         direction="maximize",
         sampler=TPESampler(
-            n_startup_trials=3,
+            n_startup_trials=n_startup_trials,
         ),
     )
     if not settings.logging.optuna_trials:
         optuna.logging.set_verbosity(optuna.logging.ERROR)
     study.optimize(
         optuna_objective,
-        n_trials=settings.reverse_fs_parameter.n_trials,
+        n_trials=n_trials,
         n_jobs=settings.parallel_processes.hpo_reverse,
         gc_after_trial=True,
     )
@@ -166,9 +194,12 @@ def _optimize_evaluation_metric(
             labeled=True,
         )
         assert x_remain.columns[0] == "label"
-        # build LASSO model for micro_feature_selection
-        lasso = selection_method(x_remain, y_remain, parameters=study.best_params)
-        if lasso.coef_[0] != 0:
+        # build model for micro_feature_selection
+        model = selection_method(x_remain, y_remain, study.best_params)
+        if (("lasso" in selection_method.__name__) and (model.coef_[0] != 0.0)) or (
+            ("lasso" not in selection_method.__name__)
+            and (model.feature_importances_[0] != 0.0)
+        ):
             best_trial_value = study.best_trial.value
             best_params = study.best_params
     # optuna.delete_study(study_name=study_name, storage=settings.data_storage.path_sqlite_for_optuna)
@@ -176,12 +207,12 @@ def _optimize_evaluation_metric(
 
 
 def calculate_labeled_and_unlabeled_validation_metrics(
-        settings_id, preprocessed_data_id, selection_method, outer_cv_iteration
+    settings_id, preprocessed_data_id, selection_method, outer_cv_iteration
 ) -> pd.DataFrame:
     if isinstance(preprocessed_data_id, ray._raylet.ObjectRef):
         preprocessed_data_id = ray.get(preprocessed_data_id)
     if isinstance(
-            preprocessed_data_id.outer_preprocessed_data_splits[0], ray._raylet.ObjectRef
+        preprocessed_data_id.outer_preprocessed_data_splits[0], ray._raylet.ObjectRef
     ):
         labeled_feature_names = ray.get(
             preprocessed_data_id.outer_preprocessed_data_splits[0]
@@ -190,29 +221,14 @@ def calculate_labeled_and_unlabeled_validation_metrics(
         labeled_feature_names = preprocessed_data_id.outer_preprocessed_data_splits[
             0
         ].train_data_outer_cv_df.columns
-    #     assert isinstance(
-    #         preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_iteration][0], ray._raylet.ObjectRef
-    #     )
-    #     labeled_feature_names = ray.get(
-    #         preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_iteration][0]
-    #     ).train_df.columns
-    #     del preprocessed_data
-    # elif isinstance(
-    #     preprocessed_data_id.inner_preprocessed_data_splits_list[outer_cv_iteration][0], ray._raylet.ObjectRef
-    # ):
-    #     labeled_feature_names = ray.get(
-    #         preprocessed_data_id.inner_preprocessed_data_splits_list[outer_cv_iteration][0]
-    #     ).train_df.columns
-    # else:
-    #     labeled_feature_names = preprocessed_data_id.inner_preprocessed_data_splits_list[outer_cv_iteration][
-    #         0
-    #     ].train_df.columns
     feature_names = labeled_feature_names[1:]  # exclude label as target
     del labeled_feature_names
     labeled_validation_metrics = []
     unlabeled_validation_metrics = []
 
-    for batch in chunked(feature_names, settings_id.parallel_processes.reverse_feature_selection):
+    for batch in chunked(
+        feature_names, settings_id.parallel_processes.reverse_feature_selection
+    ):
         labeled_validation_metrics_chunk = []
         unlabeled_validation_metrics_chunk = []
 
@@ -228,19 +244,6 @@ def calculate_labeled_and_unlabeled_validation_metrics(
                     target_feature,
                     selection_method,
                 )
-                # (
-                #     labeled,
-                #     unlabeled,
-                # ) = _remote_calculate_validation_metrics_per_feature(
-                #     # ) = _remote_calculate_validation_metrics_per_feature.options(
-                #     #     memory=0.5 * 1024 * 1024 * 1024
-                #     ).remote(
-                #     settings_id,
-                #     preprocessed_data_id,
-                #     outer_cv_iteration,
-                #     target_feature,
-                #     selection_method,
-                # )
             else:
                 labeled, unlabeled = _calculate_validation_metrics_per_feature(
                     settings_id,
@@ -257,19 +260,23 @@ def calculate_labeled_and_unlabeled_validation_metrics(
 
         if settings_id.parallel_processes.reverse_feature_selection > 1:
             # delete object ids from ray to free memory
-            loaded_unlabeled_validation_metrics = ray.get(unlabeled_validation_metrics_chunk)
+            loaded_unlabeled_validation_metrics = ray.get(
+                unlabeled_validation_metrics_chunk
+            )
             del unlabeled_validation_metrics_chunk
             unlabeled_validation_metrics.extend(loaded_unlabeled_validation_metrics)
             del loaded_unlabeled_validation_metrics
 
-            loaded_labeled_validation_metrics = ray.get(labeled_validation_metrics_chunk)
+            loaded_labeled_validation_metrics = ray.get(
+                labeled_validation_metrics_chunk
+            )
             del labeled_validation_metrics_chunk
             labeled_validation_metrics.extend(loaded_labeled_validation_metrics)
             del loaded_labeled_validation_metrics
     assert (
-            len(unlabeled_validation_metrics)
-            == len(labeled_validation_metrics)
-            == len(feature_names)
+        len(unlabeled_validation_metrics)
+        == len(labeled_validation_metrics)
+        == len(feature_names)
     )
     for list_element in unlabeled_validation_metrics:
         assert isinstance(list_element, Number)
@@ -287,7 +294,7 @@ def calculate_labeled_and_unlabeled_validation_metrics(
 
 
 def _calculate_validation_metrics_per_feature(
-        settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
+    settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
 ):
     # optimize hyperparameters with labeled training data
     labeled_validation_metric_value, best_parameters = _optimize_evaluation_metric(
@@ -318,7 +325,7 @@ def _calculate_validation_metrics_per_feature(
 
 @ray.remote(num_returns=2)
 def _remote_calculate_validation_metrics_per_feature(
-        settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
+    settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
 ):
     return _calculate_validation_metrics_per_feature(
         settings,

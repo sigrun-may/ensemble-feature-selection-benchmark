@@ -80,10 +80,19 @@ def _calculate_validation_metric(
         ) = _get_uncorrelated_train_and_validation_data(
             data_split, target_feature, labeled
         )
-        model = selection_method(x_train, y_train, parameters=hyperparameters)
+        model = selection_method(x_train, y_train, hyperparameters)
         # terminate trial, if label was not selected for reverse feature selection
-        if labeled and math.isclose(model.coef_[x_train.columns.get_loc("label")], 0):
-            raise TrialPruned
+        if labeled:
+            if (
+                "lasso" in selection_method.__name__
+                and math.isclose(model.coef_[x_train.columns.get_loc("label")], 0.0)
+            ) or (
+                "andom" in selection_method.__name__
+                and math.isclose(
+                    model.feature_importances_[x_train.columns.get_loc("label")], 0.0
+                )
+            ):
+                raise TrialPruned
 
         predicted_y_validation = model.predict(x_validation)
         predicted_y.extend(predicted_y_validation)
@@ -112,6 +121,20 @@ def _optimize(
             hyperparameter_dict = {
                 "alpha": trial.suggest_float("alpha", 0.01, 1.0, log=True)
             }
+        elif "random_forest" in selection_method.__name__:
+            hyperparameter_dict = {
+                "random_state": 42,
+                "criterion": "absolute_error",
+                "max_depth": trial.suggest_int("max_depth", 2, 6),
+                "min_samples_leaf": trial.suggest_int(
+                    "min_samples_leaf",
+                    2,
+                    math.floor(settings.data.number_of_samples / 2),
+                ),
+                "n_jobs": 1,
+            }
+        else:
+            raise ValueError("No valid selection method for reverse feature selection")
         return _calculate_validation_metric(
             preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_iteration],
             target_feature,
@@ -120,23 +143,28 @@ def _optimize(
             hyperparameters=hyperparameter_dict,
         )
 
-    study_name = (
-        f"{selection_method.__name__}_{target_feature}_iteration_{outer_cv_iteration}"
-    )
+    if "lasso" in selection_method.__name__:
+        n_trials = settings.reverse_fs_lasso_parameter.n_trials
+        n_startup_trials = settings.reverse_fs_lasso_parameter.n_startup_trials
+    else:
+        n_trials = settings.reverse_fs_random_forest_parameter.n_trials
+        n_startup_trials = settings.reverse_fs_random_forest_parameter.n_startup_trials
+
+    study_name = f"lasso_{target_feature}_iteration_{outer_cv_iteration}"
     study = optuna.create_study(
         # storage=settings.data_storage.path_sqlite_for_optuna,
         # load_if_exists = True,
         study_name=study_name,
-        direction=direction,
+        direction="maximize",
         sampler=TPESampler(
-            n_startup_trials=3,
+            n_startup_trials=n_startup_trials,
         ),
     )
     if not settings.logging.optuna_trials:
         optuna.logging.set_verbosity(optuna.logging.ERROR)
     study.optimize(
         _optuna_objective,
-        n_trials=settings.reverse_fs_parameter.n_trials,
+        n_trials=n_trials,
         n_jobs=settings.parallel_processes.hpo_reverse,
         gc_after_trial=True,
     )
@@ -157,13 +185,13 @@ def _optimize(
         )
         assert x_train_outer_cv.columns[0] == "label"
         # build model for micro_feature_selection
-        model = selection_method(
-            x_train_outer_cv, y_train_outer_cv, parameters=study.best_params
-        )
-        if "lasso" in selection_method.__name__:
-            if model.coef_[0] != 0:
-                best_trial_value = study.best_trial.value
-                best_params = study.best_params
+        model = selection_method(x_train_outer_cv, y_train_outer_cv, study.best_params)
+        if (("lasso" in selection_method.__name__) and (model.coef_[0] != 0.0)) or (
+            ("lasso" not in selection_method.__name__)
+            and (model.feature_importances_[0] != 0.0)
+        ):
+            best_trial_value = study.best_trial.value
+            best_params = study.best_params
     # optuna.delete_study(study_name=study_name, storage=settings.data_storage.path_sqlite_for_optuna)
     return best_trial_value, best_params
 
@@ -239,8 +267,8 @@ def _calculate_validation_metrics_per_feature(
             hyperparameters=best_parameters,
         )
     else:
-        unlabeled_validation_metric_value = 0
-        assert math.isclose(labeled_validation_metric_value, 0)
+        unlabeled_validation_metric_value = 0.0
+        assert math.isclose(labeled_validation_metric_value, 0.0)
         _logger.info("No trial completed")
 
     return labeled_validation_metric_value, unlabeled_validation_metric_value
