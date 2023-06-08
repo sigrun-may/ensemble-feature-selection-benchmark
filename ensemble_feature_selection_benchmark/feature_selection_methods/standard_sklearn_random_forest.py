@@ -10,30 +10,24 @@ import logging
 import numpy as np
 import shap
 from joblib import parallel_backend
-from sklearn.ensemble import RandomForestClassifier
-
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 _logger = logging.getLogger(__name__)
 
 
-def train_random_forest(train_df, params):
-    # prepare train data
-    y_train = train_df["label"].values
-    x_train = train_df.loc[:, train_df.columns != "label"]
+def train_random_forest_regressor(x_train, y_train, params):
+    # build model
+    model = RandomForestRegressor()
+    model = model.set_params(**params)
+    model.fit(x_train, np.ravel(y_train))
+    return model
 
-    with parallel_backend(backend="loky", n_jobs=1, inner_max_num_threads=1):
-        # build model
-        model = RandomForestClassifier()
-        # if fixed_parameters:
-        #     params = fixed_parameters
-        # elif trial:
-        #     assert isinstance(trial, optuna.trial._trial.Trial)
-        #     # TODO set seed
-        #     params = {"n_estimators": trial.suggest_int("n_estimators", 1, 150), "random_state": 42}
-        # else:
-        #     raise ValueError("No parameters available")
-        model = model.set_params(**params)
-        model.fit(x_train, np.ravel(y_train))
+
+def train_random_forest(x_train, y_train, params):
+    # build model
+    model = RandomForestClassifier()
+    model = model.set_params(**params)
+    model.fit(x_train, np.ravel(y_train))
     return model
 
 
@@ -44,8 +38,12 @@ def calculate_score(data_inner_cv_iteration, parameters):
     x_validation = validation_df.loc[:, validation_df.columns != "label"]
     y_validation = np.ravel(validation_df["label"])
 
+    # prepare train data
+    y_train = train_df["label"].values
+    x_train = train_df.loc[:, train_df.columns != "label"]
+
     # build model
-    model = train_random_forest(train_df, parameters)
+    model = train_random_forest(x_train, y_train, parameters)
     # predicted_y_validation = model.predict(x_validation)
     score = model.score(x_validation, y_validation)
 
@@ -63,6 +61,11 @@ def calculate_score(data_inner_cv_iteration, parameters):
 
 def calculate_micro_feature_importance(train_data_outer_cv_df, hyperparameters_dict):
     assert len(hyperparameters_dict) > 0
+
+    # prepare train data
+    y_train = train_data_outer_cv_df["label"].values
+    x_train = train_data_outer_cv_df.loc[:, train_data_outer_cv_df.columns != "label"]
+
     # build model for micro_feature_importance
-    micro_model = train_random_forest(train_data_outer_cv_df, hyperparameters_dict)
+    micro_model = train_random_forest(x_train, y_train, hyperparameters_dict)
     return list(micro_model.feature_importances_)
