@@ -77,7 +77,7 @@ class PreprocessingBaseClass(ABC):
 
     @staticmethod
     def preprocess_data_split(self, train_index, test_index, data_df) -> DataSplit:
-        if settings["preprocessing"]["scale_and_power_transform"]:
+        if settings.preprocessing.scale_and_power_transform:
             # remove label for transformation
             # labels must be in col 0 (first col)
             unlabeled_data_df = data_df.iloc[:, 1:]
@@ -113,7 +113,7 @@ class PreprocessingBaseClass(ABC):
             train_df = data_df.iloc[train_index, :]
             test_df = data_df.iloc[test_index, :]
 
-        if settings["preprocessing"]["train_correlation_method"]:
+        if settings.preprocessing.train_correlation_method:
             assert self.correlation_matrix_calculator is not None
             train_correlation_matrix = (
                 self.correlation_matrix_calculator.calculate_correlation_matrix(
@@ -260,7 +260,7 @@ class YeoJohnsonC(PowerTransformerBaseClass):
         ) = yeo_johnson_c.yeo_johnson_power_transformation(
             path_to_c_library=settings["path_yeo_johnson_c_library"],
             unlabeled_data_np=train_np,
-            interval_start= settings.preprocessing.interval_start,
+            interval_start=settings.preprocessing.interval_start,
             interval_end=settings.preprocessing.interval_end,
             interval_parameter=settings.preprocessing.interval_parameter,
             standardize=settings.preprocessing.standardize,
@@ -271,7 +271,7 @@ class YeoJohnsonC(PowerTransformerBaseClass):
         test_pd = unlabeled_data_df.iloc[test_index, :]
         transformed_test_np = np.zeros_like(test_pd.values)
 
-        print("duration= ", datetime.now()-start)
+        print("duration= ", datetime.now() - start)
 
         transformed_test_np_stats = np.zeros_like(test_pd.values)
         skews_c = []
@@ -379,32 +379,27 @@ def preprocess_data() -> PreprocessedData:
     data_df["label"] = data_df["label"]
     data_df = prepare_data(data_df)
 
-    if not settings["preprocessing"]["scale_and_power_transform"]:
-        preprocessor = str_to_class(
-            settings["preprocessing"]["preprocessing_parallel"]
-        )(
-            _power_transformer=None,
-            _correlation_matrix_calculator=None,
-        )
-        preprocessed_data = preprocessor.get_preprocessed_data_splits(
-            preprocessor, data_df
-        )
+    if not settings.preprocessing.scale_and_power_transform:
+        power_transformer = None
     else:
-        # data preprocessing
-        start_preprocessing = datetime.now()
-        if settings["preprocessing"]["train_correlation_method"]:
-            correlation_matrix_calculator = str_to_class(settings["preprocessing"]["train_correlation_method"])
-        else:
-            correlation_matrix_calculator = None
-        preprocessor = str_to_class(
-            settings["preprocessing"]["preprocessing_parallel"]
-        )(
-            _power_transformer=str_to_class(settings["preprocessing"]["yeo_johnson"]),
-            _correlation_matrix_calculator=correlation_matrix_calculator,
+        power_transformer = str_to_class(settings.preprocessing.yeo_johnson)
+    if not settings.preprocessing.train_correlation_method:
+        correlation_matrix_calculator = None
+    else:
+        correlation_matrix_calculator = str_to_class(
+            settings.preprocessing.train_correlation_method
         )
-        preprocessed_data = preprocessor.get_preprocessed_data_splits(
-            preprocessor, data_df
-        )
-        preprocessing_time = datetime.now() - start_preprocessing
-        print("finished preprocessing in", preprocessing_time)
+    preprocessor = str_to_class(
+        settings["preprocessing"]["preprocessing_parallel"]
+    )(
+        _power_transformer=power_transformer,
+        _correlation_matrix_calculator=correlation_matrix_calculator,
+    )
+    # data preprocessing
+    start_preprocessing=datetime.now()
+    preprocessed_data = preprocessor.get_preprocessed_data_splits(
+        preprocessor, data_df
+    )
+    preprocessing_time = datetime.now() - start_preprocessing
+    print("finished preprocessing in", preprocessing_time)
     return preprocessed_data
