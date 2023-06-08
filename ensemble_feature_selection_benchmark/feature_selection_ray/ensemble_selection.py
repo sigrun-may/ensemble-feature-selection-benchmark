@@ -103,54 +103,79 @@ def ensemble_feature_selection(preprocessed_data_id):
     settings_id = ray.put(settings)
     parallel_methods_selection_object_references_list = []
     for feature_selection_method in settings.selection_method.methods:
-        print(f"Start {feature_selection_method}")
-        feature_selection_class = str_to_class(feature_selection_method)
+        # skip reverse feature selection
+        if "everse" not in feature_selection_method:
+            print(f"Start {feature_selection_method}")
+            feature_selection_class = str_to_class(feature_selection_method)
 
-        # parallel outer cross-validation and parallel feature selection methods
-        if (settings.parallel_processes.feature_selection_methods > 1) and (
-            settings.parallel_processes.outer_cv > 1
-        ):
-            none_object_reference = _remote_parallel_outer_cv.remote(
-                settings_id,
-                preprocessed_data_id,
-                feature_selection_class,
-                feature_selection_method,
-            )
-            parallel_methods_selection_object_references_list.append(
-                none_object_reference
-            )
+            # parallel outer cross-validation and parallel feature selection methods
+            if (settings.parallel_processes.feature_selection_methods > 1) and (
+                settings.parallel_processes.outer_cv > 1
+            ):
+                none_object_reference = _remote_parallel_outer_cv.remote(
+                    settings_id,
+                    preprocessed_data_id,
+                    feature_selection_class,
+                    feature_selection_method,
+                )
+                parallel_methods_selection_object_references_list.append(
+                    none_object_reference
+                )
 
-        # parallel outer cross-validation and serial feature selection methods
-        elif (settings.parallel_processes.feature_selection_methods < 2) and (
-            settings.parallel_processes.outer_cv > 1
-        ):
-            raw_selection_result = _parallel_outer_cv(
-                settings_id=settings_id,
-                preprocessed_data_id=preprocessed_data_id,
-                feature_selection_class=feature_selection_class,
-                n_outer_folds=settings.cv.n_outer_folds,
-            )
-            store_experiments.save_raw_selection_result_per_method(
-                raw_selection_result, feature_selection_method, settings
-            )
-            del raw_selection_result
+            # parallel outer cross-validation and serial feature selection methods
+            elif (settings.parallel_processes.feature_selection_methods < 2) and (
+                settings.parallel_processes.outer_cv > 1
+            ):
+                raw_selection_result = _parallel_outer_cv(
+                    settings_id=settings_id,
+                    preprocessed_data_id=preprocessed_data_id,
+                    feature_selection_class=feature_selection_class,
+                    n_outer_folds=settings.cv.n_outer_folds,
+                )
+                store_experiments.save_raw_selection_result_per_method(
+                    raw_selection_result, feature_selection_method, settings
+                )
+                del raw_selection_result
 
-        # serial outer cross-validation and parallel feature selection methods
-        elif (settings.parallel_processes.feature_selection_methods > 1) and (
-            settings.parallel_processes.outer_cv < 2
-        ):
-            none_object_reference = _remote_serial_outer_cv.remote(
-                settings_id,
-                preprocessed_data_id,
-                feature_selection_class,
-                feature_selection_method,
-            )
-            parallel_methods_selection_object_references_list.append(
-                none_object_reference
-            )
+            # serial outer cross-validation and parallel feature selection methods
+            elif (settings.parallel_processes.feature_selection_methods > 1) and (
+                settings.parallel_processes.outer_cv < 2
+            ):
+                none_object_reference = _remote_serial_outer_cv.remote(
+                    settings_id,
+                    preprocessed_data_id,
+                    feature_selection_class,
+                    feature_selection_method,
+                )
+                parallel_methods_selection_object_references_list.append(
+                    none_object_reference
+                )
 
-        # serial outer cross-validation and serial feature selection methods
-        else:
+            # serial outer cross-validation and serial feature selection methods
+            else:
+                raw_selection_result_list = []
+                for outer_cv_iteration in range(settings.cv.n_outer_folds):
+                    raw_selection_result = (
+                        feature_selection_class.select_feature_subsets(
+                            data=preprocessed_data_id,
+                            outer_cv_iteration=outer_cv_iteration,
+                            settings_id=settings,
+                        )
+                    )
+                    print(raw_selection_result)
+                    raw_selection_result_list.append(raw_selection_result)
+                store_experiments.save_raw_selection_result_per_method(
+                    raw_selection_result_list, feature_selection_method, settings
+                )
+                del raw_selection_result
+
+    ray.get(parallel_methods_selection_object_references_list)
+
+    # reverse feature selection with parallel features
+    for feature_selection_method in settings.selection_method.methods:
+        if "everse" in feature_selection_method:
+            print(f"Start {feature_selection_method}")
+            feature_selection_class = str_to_class(feature_selection_method)
             raw_selection_result_list = []
             for outer_cv_iteration in range(settings.cv.n_outer_folds):
                 raw_selection_result = feature_selection_class.select_feature_subsets(
@@ -158,10 +183,11 @@ def ensemble_feature_selection(preprocessed_data_id):
                     outer_cv_iteration=outer_cv_iteration,
                     settings_id=settings,
                 )
+                print(raw_selection_result)
                 raw_selection_result_list.append(raw_selection_result)
             store_experiments.save_raw_selection_result_per_method(
                 raw_selection_result_list, feature_selection_method, settings
             )
             del raw_selection_result
-    ray.get(parallel_methods_selection_object_references_list)
+
     return datetime.datetime.utcnow(), settings_id
