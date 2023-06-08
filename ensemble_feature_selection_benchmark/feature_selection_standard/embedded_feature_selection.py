@@ -89,11 +89,11 @@ def select_features(
                 "criterion": "entropy",
                 "max_depth": trial.suggest_int("max_depth", 2, 6),
                 "min_samples_leaf": trial.suggest_int(
-                        "min_samples_leaf",
-                        2,
-                        math.floor(settings.data.number_of_samples / 2),
-                    ),
-                "n_jobs": settings.parallel_processes.n_jobs_training
+                    "min_samples_leaf",
+                    2,
+                    math.floor(settings.data.number_of_samples / 2),
+                ),
+                "n_jobs": settings.parallel_processes.n_jobs_training,
             }
         elif "svm" in selection_method.__name__:
             hyperparameter_dict = {

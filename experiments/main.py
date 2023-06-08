@@ -63,7 +63,10 @@ def run_experiment():
 
     # feature selection
     if settings.parallel_processes.init_ray:
-        assert len(preprocessed_data.inner_preprocessed_data_splits_list) == settings.cv.n_outer_folds
+        assert (
+            len(preprocessed_data.inner_preprocessed_data_splits_list)
+            == settings.cv.n_outer_folds
+        )
         inner_preprocessed_data_id_list = []
         for (
             preprocessed_inner_cv

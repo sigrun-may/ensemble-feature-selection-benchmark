@@ -21,7 +21,7 @@ _logger = logging.getLogger(__name__)
 def train_lasso_sklearn(x_train, y_train, parameters):
     with parallel_backend(backend="loky", n_jobs=1, inner_max_num_threads=1):
         # build LASSO model
-        lasso = Lasso(  # NOTE: lasso -> model
+        lasso = Lasso(
             alpha=parameters["alpha"],
             fit_intercept=True,
             positive=False,

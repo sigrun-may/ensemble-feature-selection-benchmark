@@ -182,9 +182,7 @@ def save_raw_selection_result_per_method(
         check_feature_selection_result.check_feature_selection_result_outer_cv(
             pickled_data, feature_selection_method_name, settings
         )
-        print(
-            f"Pickled {feature_selection_method_name} at {datetime.datetime.now()}"
-        )
+        print(f"Pickled {feature_selection_method_name} at {datetime.datetime.now()}")
         del selection_result_list
         del pickled_data
 
