@@ -57,7 +57,7 @@ def _get_actual_node_power_usage(node_power_usages_dict: dict):
 
 def _measure_power_usage(node_power_measurement_dict, event):
     while True:
-        time.sleep(1)
+        time.sleep(60)
         node_power_measurement_dict = _get_actual_node_power_usage(
             node_power_measurement_dict
         )
