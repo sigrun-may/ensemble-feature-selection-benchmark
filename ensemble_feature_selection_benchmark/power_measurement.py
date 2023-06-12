@@ -41,6 +41,7 @@ def _get_actual_node_power_usage(node_power_usages_dict: dict):
                     node_power_usages_dict[f"{node_id}_peg"] += float(
                         node["@actualPEGPowerUsage"]
                     )
+            node_power_usages_dict["number_of_measurements"] += 1
             return node_power_usages_dict
         else:
             node_power_usages_dict["error"] += 1
@@ -71,7 +72,7 @@ def _get_power_consumption_baseline(node_power_measurement_dict, seconds: int):
         node_power_measurement_dict = _get_actual_node_power_usage(
             node_power_measurement_dict
         )
-        time.sleep(1)
+        time.sleep(60)
         counter += 1
         print(counter, node_power_measurement_dict)
     print(node_power_measurement_dict)
@@ -86,11 +87,10 @@ def _get_power_consumption_baseline(node_power_measurement_dict, seconds: int):
 
 def initialize_benchmark_dict():
     # initialize dict for power measurement
-    benchmark_dict = {}
+    benchmark_dict = {"error": 0, "number_of_measurements": 0}
     for node_id in settings["nodes"]["baseBoardIds"]:
         benchmark_dict[f"node{node_id}"] = 0
         benchmark_dict[f"node{node_id}_peg"] = 0
-        benchmark_dict["error"] = 0
     benchmark_dict["time"] = datetime.now()
     assert type(benchmark_dict["time"]) == datetime
     return benchmark_dict
