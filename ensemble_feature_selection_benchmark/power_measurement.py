@@ -42,7 +42,6 @@ def _get_actual_node_power_usage(node_power_usages_dict: dict):
                         node["@actualPEGPowerUsage"]
                     )
             node_power_usages_dict["number_of_measurements"] += 1
-            return node_power_usages_dict
         else:
             node_power_usages_dict["error"] += 1
     else:
@@ -52,7 +51,7 @@ def _get_actual_node_power_usage(node_power_usages_dict: dict):
             if node_id in node_power_usages_dict.keys():
                 node_power_usages_dict[node_id] += 1
                 node_power_usages_dict[f"{node_id}_peg"] += 1
-        return node_power_usages_dict
+    return node_power_usages_dict
 
 
 def _measure_power_usage(node_power_measurement_dict, event):
