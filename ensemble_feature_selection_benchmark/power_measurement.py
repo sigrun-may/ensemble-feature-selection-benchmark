@@ -38,6 +38,9 @@ def _get_actual_node_power_usage(node_power_usages_dict: dict):
                     node_power_usages_dict[node_id] += float(
                         node["@actualNodePowerUsage"]
                     )
+                    node_power_usages_dict[f"{node_id}_cpu"] += float(
+                        node["@actualPowerUsage"]
+                    )
                     node_power_usages_dict[f"{node_id}_peg"] += float(
                         node["@actualPEGPowerUsage"]
                     )
@@ -90,6 +93,7 @@ def initialize_benchmark_dict():
     for node_id in settings["nodes"]["baseBoardIds"]:
         benchmark_dict[f"node{node_id}"] = 0
         benchmark_dict[f"node{node_id}_peg"] = 0
+        benchmark_dict[f"node{node_id}_cpu"] = 0
     benchmark_dict["time"] = datetime.now()
     assert type(benchmark_dict["time"]) == datetime
     return benchmark_dict
