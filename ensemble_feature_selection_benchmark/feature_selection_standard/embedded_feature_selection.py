@@ -128,7 +128,7 @@ def select_features(
                     num_iterations=trial.suggest_int("num_iterations", 1, 100),
                     objective="binary",
                     metric="binary_logloss",
-                    verbose=2,
+                    verbose=-1,
                     num_threads=settings.parallel_processes.num_threads_lightgbm,
                     device_type=settings.parallel_processes.device_type_lightgbm,
                     tree_learner=settings.parallel_processes.tree_learner,
