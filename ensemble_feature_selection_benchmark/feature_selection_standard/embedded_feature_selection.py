@@ -10,6 +10,7 @@ import logging
 
 import numpy as np
 import optuna
+from optuna import TrialPruned
 from optuna.samplers import TPESampler
 
 from config import settings
@@ -77,6 +78,7 @@ def select_features(
     """
 
     def optuna_objective(trial):
+        print(selection_method.__name__)
         # select hyperparemters for the different embedded feature selection methods for ensemble feature selection
         if "lasso" in selection_method.__name__:
             hyperparameter_dict = {
@@ -153,26 +155,32 @@ def select_features(
             preprocessed_data.inner_preprocessed_data_splits_list[outer_cv_iteration]
         )
         scores_list = []
-        coefficients_lists = []
+        selected_features_lists = []
         shap_values_lists = []
 
         # cross validation for the optimization of alpha
-        for data_inner_cv_iteration in preprocessed_data_inner_cv_list:
-            score, coefficients_list, shap_list = selection_method.calculate_score(
+        for step_count, data_inner_cv_iteration in enumerate(preprocessed_data_inner_cv_list):
+            score, selected_features, shap_list = selection_method.calculate_score(
                 data_inner_cv_iteration, hyperparameter_dict
             )
-            coefficients_lists.append(coefficients_list)
+            selected_features_lists.append(selected_features)
             scores_list.append(score)
             shap_values_lists.append(shap_list)
 
+            if sum(selected_features) == 0:
+                raise TrialPruned()
+            trial.report(np.mean(scores_list), step_count)
+            if trial.should_prune():
+                raise optuna.TrialPruned()
+
         assert (
-            len(coefficients_lists)
+            len(selected_features_lists)
             == len(scores_list)
             == len(shap_values_lists)
             == len(preprocessed_data_inner_cv_list)
         )
         trial.set_user_attr("shap_values", shap_values_lists)
-        trial.set_user_attr("macro_feature_importances", coefficients_lists)
+        trial.set_user_attr("macro_feature_importances", selected_features_lists)
         return np.mean(scores_list)
 
     study = optuna.create_study(
@@ -181,6 +189,7 @@ def select_features(
         study_name=f"standard_outer_cv_iteration_{outer_cv_iteration}",
         direction=direction,
         sampler=TPESampler(seed=42),
+        pruner=optuna.pruners.SuccessiveHalvingPruner()
     )
     if not settings.logging.optuna_trials:  # deactivate logging on cluster
         optuna.logging.set_verbosity(optuna.logging.ERROR)
