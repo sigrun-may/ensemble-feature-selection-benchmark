@@ -104,13 +104,18 @@ def post(settings):
         raise ValueError("Environment must be env='cluster' or env='local'")
 
     data[
-        "path_yeo_johnson_module"
-    ] = f"{cwd_path}{settings['preprocessing']['path_yeo_johnson_module']}".replace(
+        "path_yeo_johnson_c_module"
+    ] = f"{cwd_path}{settings['preprocessing']['path_yeo_johnson_c_module']}".replace(
         "ensemble-feature-selection-benchmark", ""
     )
     data[
         "path_yeo_johnson_c_library"
     ] = f"{cwd_path}{settings['preprocessing']['path_yeo_johnson_c_library']}".replace(
+        "ensemble-feature-selection-benchmark", ""
+    )
+    data[
+        "path_yeo_johnson_fpga_module"
+    ] = f"{cwd_path}{settings['preprocessing']['path_yeo_johnson_fpga_module']}".replace(
         "ensemble-feature-selection-benchmark", ""
     )
     print("Return from hook")
