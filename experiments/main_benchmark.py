@@ -114,7 +114,7 @@ def run_experiment():
 def benchmark(workflow_element, start_time_workflow, data=None):
     print(f"Start {workflow_element}")
     # start time and power measurement
-    benchmark_dict = power_measurement.initialize_benchmark_dict()
+    benchmark_dict = power_measurement.initialize_benchmark_dict(workflow_element)
     event = Event()
     preprocessing_power_measurement_thread = threading.Thread(
         target=power_measurement._measure_power_usage, args=(benchmark_dict, event)

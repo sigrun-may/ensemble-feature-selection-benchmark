@@ -58,8 +58,16 @@ def _get_actual_node_power_usage(node_power_usages_dict: dict):
 
 
 def _measure_power_usage(node_power_measurement_dict, event):
+    if node_power_measurement_dict["workflow_element"] == "preprocessing":
+        benchmark_interval = 1
+    elif node_power_measurement_dict["workflow_element"] == "feature_selection":
+        benchmark_interval = 60
+    else:
+        raise ValueError(
+            "Workflow element can be 'preprocessing' or 'feature_selection'"
+        )
     while True:
-        time.sleep(1)
+        time.sleep(benchmark_interval)
         node_power_measurement_dict = _get_actual_node_power_usage(
             node_power_measurement_dict
         )
@@ -87,13 +95,15 @@ def _get_power_consumption_baseline(node_power_measurement_dict, seconds: int):
     return node_power_measurement_dict
 
 
-def initialize_benchmark_dict():
+def initialize_benchmark_dict(workflow_element):
     # initialize dict for power measurement
     benchmark_dict = {"error": 0, "number_of_measurements": 0}
     for node_id in settings["nodes"]["baseBoardIds"]:
         benchmark_dict[f"node{node_id}"] = 0
         benchmark_dict[f"node{node_id}_peg"] = 0
         benchmark_dict[f"node{node_id}_cpu"] = 0
+
+    benchmark_dict["workflow_element"] = workflow_element
     benchmark_dict["time"] = datetime.now()
     assert type(benchmark_dict["time"]) == datetime
     return benchmark_dict
