@@ -36,9 +36,9 @@ def _get_actual_node_power_usage(node_power_usages_dict: dict):
                 node_id = f"node{base_board_id_str}"
                 if node_id in node_power_usages_dict.keys():
                     node_power_usages_dict[node_id] += float(
-                        node["@actualNodePowerUsage_cpu"]
+                        node["@actualNodePowerUsage"]
                     )
-                    node_power_usages_dict[f"{node_id}"] += float(
+                    node_power_usages_dict[f"{node_id}_cpu"] += float(
                         node["@actualPowerUsage"]
                     )
                     node_power_usages_dict[f"{node_id}_peg"] += float(
