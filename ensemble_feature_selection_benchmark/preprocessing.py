@@ -28,11 +28,11 @@ from ensemble_feature_selection_benchmark.data_types import (
 if settings["preprocessing"]["yeo_johnson"] == "YeoJohnsonC":
     print(settings.path_yeo_johnson_module)
     yeo_johnson_c = SourceFileLoader(
-        "c_accesspoint", settings["path_yeo_johnson_module"]
+        "c_accesspoint", settings["path_yeo_johnson_c_module"]
     ).load_module()
 elif settings["preprocessing"]["yeo_johnson"] == "YeoJohnsonFPGA":
     yeo_johnson_fpga = SourceFileLoader(
-        "yeo_johnson_fpga_interface", settings["path_yeo_johnson_module"]
+        "yeo_johnson_fpga_interface", settings["path_yeo_johnson_fpga_module"]
     ).load_module()
 
 
