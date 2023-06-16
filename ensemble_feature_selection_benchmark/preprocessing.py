@@ -30,6 +30,10 @@ if settings["preprocessing"]["yeo_johnson"] == "YeoJohnsonC":
     yeo_johnson_c = SourceFileLoader(
         "c_accesspoint", settings["path_yeo_johnson_module"]
     ).load_module()
+elif settings["preprocessing"]["yeo_johnson"] == "YeoJohnsonFPGA":
+    yeo_johnson_fpga = SourceFileLoader(
+        "yeo_johnson_fpga_interface", settings["path_yeo_johnson_module"]
+    ).load_module()
 
 
 def str_to_class(class_name):
@@ -267,50 +271,64 @@ class YeoJohnsonC(PowerTransformerBaseClass):
             time_stamps=settings.preprocessing.time_stamps,
             number_of_threads=settings.parallel_processes.yeo_johnson_c,
         )
+        print("duration= ", datetime.now() - start)
+
         # transform test data
         test_pd = unlabeled_data_df.iloc[test_index, :]
         transformed_test_np = np.zeros_like(test_pd.values)
-
-        print("duration= ", datetime.now() - start)
-
-        transformed_test_np_stats = np.zeros_like(test_pd.values)
-        skews_c = []
-        skews_scipy = []
-
-        counter = 0
         for i, (column_name, test_column) in enumerate(test_pd.items()):
             transformed_test_np[:, i] = yeojohnson(test_column.values, lambdas[i])
-            # skews_c.append(skew(transformed_test_np[:, i]))
-            # _, scipy_optimized_lambda = yeojohnson(train_np[:, i])
-            # transformed_test_np_stats[:, i] = yeojohnson(
-            #     test_column.values, scipy_optimized_lambda
-            # )
-        #     skews_scipy.append(skew(transformed_test_np_stats[:, i]))
-        #     if abs(skews_scipy[i]) < abs(skews_c[i]):
-        #         print(
-        #             f"lambda scipy: {scipy_optimized_lambda}, lambda yj c: {lambdas[i]}"
-        #         )
-        #         print(f"skew scipy: {skews_scipy[i]}, skew yj c: {skews_c[i]}")
-        #         # print("Abweichung skew yj c von scipy in Prozent: ",
-        #         #        (abs(skews_c[i]) - abs(skews_scipy[i])) / (abs(skews_scipy[i]) * 100))
-        #         print("-------")
-        #         counter += 1
-        # print("-------")
-        # print(
-        #     f"{counter} von {test_pd.shape[1]} Absolutwerten der skews waren größer bei yj c"
-        # )
 
         # standardize test data
         scaler = StandardScaler()
         scaler.fit(unlabeled_data_df.iloc[train_index, :].to_numpy())
         transformed_test_np = scaler.transform(transformed_test_np, copy=False)
-        # transformed_test_np_stats = scaler.transform(
-        #     transformed_test_np_stats, copy=False
-        # )
-        #
-        # np.testing.assert_almost_equal(
-        #     transformed_test_np, transformed_test_np_stats, decimal=1
-        # )
+
+        assert (
+            len(lambdas)
+            == transformed_train_np.shape[1]
+            == transformed_test_np.shape[1]
+            == unlabeled_data_df.shape[1]
+            == test_pd.shape[1]
+        )
+        assert transformed_test_np.shape[0] == len(test_index)
+        assert transformed_train_np.shape[0] == len(train_index)
+
+        return TrainTestSplit(
+            train_np=transformed_train_np, test_np=transformed_test_np
+        )
+
+
+class YeoJohnsonFPGA(PowerTransformerBaseClass):
+    @staticmethod
+    def transform_train_test_split(
+        unlabeled_data_df: pd.DataFrame, train_index: np.ndarray, test_index: np.ndarray
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        # check if data is unlabeled
+        assert "label" not in unlabeled_data_df.columns
+        train_np = unlabeled_data_df.iloc[train_index, :].to_numpy()
+
+        start = datetime.now()
+        # calculate lambdas
+        lambdas = yeo_johnson_fpga.yeo_johnson_fpga_interface(train_np, settings.preprocessing.interval_parameter)
+        print("duration= ", datetime.now() - start)
+
+        # transform train data
+        train_pd = unlabeled_data_df.iloc[train_index, :]
+        transformed_train_np = np.zeros_like(train_pd.values)
+        for i, (column_name, train_column) in enumerate(train_pd.items()):
+            transformed_train_np[:, i] = yeojohnson(train_column.values, lambdas[i])
+
+        # transform test data
+        test_pd = unlabeled_data_df.iloc[test_index, :]
+        transformed_test_np = np.zeros_like(test_pd.values)
+        for i, (column_name, test_column) in enumerate(test_pd.items()):
+            transformed_test_np[:, i] = yeojohnson(test_column.values, lambdas[i])
+
+        # standardize test data
+        scaler = StandardScaler()
+        transformed_train_np = scaler.fit_transform(unlabeled_data_df.iloc[train_index, :].to_numpy())
+        transformed_test_np = scaler.transform(transformed_test_np, copy=False)
         assert (
             len(lambdas)
             == transformed_train_np.shape[1]
