@@ -72,7 +72,7 @@ baseBoardIds = [4]
 scale_and_power_transform = false
 preprocessing_parallel = "PreprocessingSerial"
 # "YeoJohnsonSklearn" "YeoJohnsonC"
-yeo_johnson = "YeoJohnsonC"
+yeo_johnson = "YeoJohnsonFPGA"
 path_yeo_johnson_c_library = "yeo-johnson-transformation/x64/bin/comInterface.so"
 path_yeo_johnson_c_module = "yeo-johnson-transformation/python_bindings/c_accesspoint.py"
 interval_start = -3
