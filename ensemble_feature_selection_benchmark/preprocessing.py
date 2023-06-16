@@ -26,7 +26,6 @@ from ensemble_feature_selection_benchmark.data_types import (
 
 
 if settings["preprocessing"]["yeo_johnson"] == "YeoJohnsonC":
-    print(settings.path_yeo_johnson_module)
     yeo_johnson_c = SourceFileLoader(
         "c_accesspoint", settings["path_yeo_johnson_c_module"]
     ).load_module()
