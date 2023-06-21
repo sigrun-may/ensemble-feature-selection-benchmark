@@ -127,7 +127,7 @@ def select_features(
                     2,
                     math.floor(settings_id.data.number_of_samples / 2),
                 ),
-                "n_jobs": os.cpu_count(),
+                "n_jobs": -1,
                 #"n_jobs": settings_id.parallel_processes.n_jobs_training,
             }
         elif "svm" in selection_method.__name__:
