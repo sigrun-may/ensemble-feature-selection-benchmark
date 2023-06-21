@@ -69,7 +69,7 @@ def _parallel_outer_cv(
     return raw_selection_result_object_list
 
 
-@ray.remote(scheduling_strategy="SPREAD")  # (num_cpus=3)
+@ray.remote(scheduling_strategy="SPREAD", num_cpus=settings.cv.n_outer_folds)  # (num_cpus=3)
 def _remote_parallel_outer_cv(
     settings_id,
     preprocessed_data_id,
