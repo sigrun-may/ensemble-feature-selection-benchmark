@@ -4,6 +4,8 @@
 
 
 """Embedded feature selection with optuna hyperparameter optimization."""
+import os
+
 import math
 
 import logging
@@ -125,7 +127,8 @@ def select_features(
                     2,
                     math.floor(settings_id.data.number_of_samples / 2),
                 ),
-                "n_jobs": settings_id.parallel_processes.n_jobs_training,
+                "n_jobs": os.cpu_count(),
+                #"n_jobs": settings_id.parallel_processes.n_jobs_training,
             }
         elif "svm" in selection_method.__name__:
             hyperparameter_dict = {
@@ -159,7 +162,8 @@ def select_features(
                     objective="binary",
                     metric="binary_logloss",
                     verbose=-1,
-                    num_threads=settings_id.parallel_processes.num_threads_lightgbm,
+                    num_threads=os.cpu_count(),
+                    # num_threads=settings_id.parallel_processes.num_threads_lightgbm,
                     device_type=settings_id.parallel_processes.device_type_lightgbm,
                     tree_learner=settings_id.parallel_processes.tree_learner,
                     force_col_wise=True,
@@ -281,7 +285,7 @@ def select_features(
         optuna_objective,
         n_trials=n_trials,
         n_jobs=settings_id.parallel_processes.hpo_standard,
-        gc_after_trial=True,
+        # gc_after_trial=True,
     )
     return _set_results(
         settings_id, preprocessed_data_id, outer_cv_iteration, selection_method, study
