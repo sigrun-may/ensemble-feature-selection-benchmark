@@ -28,7 +28,8 @@ def _remote_select_feature_subsets(
     )
 
 
-@ray.remote(num_gpus=0.3)
+# @ray.remote(num_gpus=0.3)
+@ray.remote(scheduling_strategy="SPREAD")
 def _remote_serial_outer_cv(
     settings_id,
     preprocessed_data_id,

@@ -90,7 +90,7 @@ feature_cluster_correlation_method = "spearman"
 [selection_method]
 # methods = ["RandomForestLightGBM", "ExtraTreesLightGBM", "GradientBoostingDecisionTreeLightGBM", ]#"LassoSklearn", "RandomForestSklearn",] # "ReverseLassoSklearn"]
 # methods = ["ExtraTreesLightGBM", "LassoSklearn", "RandomForestSklearn", "ReverseLassoSklearn", "ReverseRandomForestSklearn"]
-methods = ["ExtraTreesLightGBM"]
+methods = ["ExtraTreesLightGBM", "RandomForestSklearn", "RandomForestLightGBM"]
 
 [aggregation_method_cv]
 methods = ["ArithmeticMean"]
