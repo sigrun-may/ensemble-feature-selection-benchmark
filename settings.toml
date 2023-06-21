@@ -69,7 +69,7 @@ tree_learner = "serial"
 baseBoardIds = [4, 3, 1]
 
 [preprocessing]
-scale_and_power_transform = true
+scale_and_power_transform = false
 preprocessing_parallel = "PreprocessingSerial"
 # "YeoJohnsonSklearn" "YeoJohnsonC"
 yeo_johnson = "YeoJohnsonFPGA"
