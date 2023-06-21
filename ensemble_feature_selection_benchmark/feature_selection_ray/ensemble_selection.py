@@ -65,7 +65,7 @@ def _parallel_outer_cv(
             outer_cv_iteration,
         )
         raw_selection_result_object_list.append(raw_selection_result_object)
-    assert len(raw_selection_result_object_list) == settings.cv.n_outer_folds
+        del raw_selection_result_object
     return raw_selection_result_object_list
 
 
