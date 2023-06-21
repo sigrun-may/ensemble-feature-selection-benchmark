@@ -69,19 +69,29 @@ def _parallel_outer_cv(
     return raw_selection_result_object_list
 
 
-@ray.remote(scheduling_strategy="SPREAD", num_cpus=outer_cv_iterations)  # (num_cpus=3)
+@ray.remote(scheduling_strategy="SPREAD", num_cpus=6)  # (num_cpus=3)
 def _remote_parallel_outer_cv(
     settings_id,
     preprocessed_data_id,
     feature_selection_class,
     feature_selection_method_name,
 ):
-    raw_selection_result_object_list = _parallel_outer_cv(
-        settings_id=settings_id,
-        preprocessed_data_id=preprocessed_data_id,
-        feature_selection_class=feature_selection_class,
-        n_outer_folds=settings_id.cv.n_outer_folds,
-    )
+    raw_selection_result_object_list = []
+    for outer_cv_iteration in range(6):
+        raw_selection_result_object = _remote_select_feature_subsets.remote(
+            settings_id,
+            preprocessed_data_id,
+            feature_selection_class,
+            outer_cv_iteration,
+        )
+        raw_selection_result_object_list.append(raw_selection_result_object)
+        del raw_selection_result_object
+    #     _parallel_outer_cv(
+    #     settings_id=settings_id,
+    #     preprocessed_data_id=preprocessed_data_id,
+    #     feature_selection_class=feature_selection_class,
+    #     n_outer_folds=settings_id.cv.n_outer_folds,
+    # )
     print("_remote_parallel_outer_cv")
     store_experiments.save_raw_selection_result_per_method(
         selection_result_list=raw_selection_result_object_list,
@@ -113,14 +123,20 @@ def ensemble_feature_selection(preprocessed_data_id):
             if (settings.parallel_processes.feature_selection_methods > 1) and (
                 settings.parallel_processes.outer_cv > 1
             ):
-                none_object_reference = _remote_parallel_outer_cv.remote(
+                # none_object_reference = _remote_parallel_outer_cv.remote(
+                #     settings_id,
+                #     preprocessed_data_id,
+                #     feature_selection_class,
+                #     feature_selection_method,
+                # )
+                # parallel_methods_selection_object_references_list.append(
+                #     none_object_reference
+                # )
+                _remote_parallel_outer_cv.remote(
                     settings_id,
                     preprocessed_data_id,
                     feature_selection_class,
                     feature_selection_method,
-                )
-                parallel_methods_selection_object_references_list.append(
-                    none_object_reference
                 )
 
             # parallel outer cross-validation and serial feature selection methods
