@@ -26,7 +26,7 @@ remove_perfect_separated_features = false
 [parallel_processes]
 init_ray = true
 feature_selection_methods = 2
-reverse_feature_selection = 1
+reverse_feature_selection = 68
 
 # hyperparameter optimization
 hpo_reverse = 1
@@ -69,10 +69,10 @@ tree_learner = "serial"
 baseBoardIds = [4, 3, 1]
 
 [preprocessing]
-scale_and_power_transform = false
+scale_and_power_transform = true
 preprocessing_parallel = "PreprocessingSerial"
-# "YeoJohnsonSklearn" "YeoJohnsonC"
-yeo_johnson = "YeoJohnsonFPGA"
+# "YeoJohnsonSklearn" "YeoJohnsonC" "YeoJohnsonFPGA"
+yeo_johnson = "YeoJohnsonC"
 path_yeo_johnson_c_library = "yeo-johnson-transformation/x64/bin/comInterface.so"
 path_yeo_johnson_c_module = "yeo-johnson-transformation/python_bindings/c_accesspoint.py"
 interval_start = -3
@@ -84,13 +84,13 @@ path_yeo_johnson_fpga_module = "yeo-johnson-transformation/python_bindings/yeo_j
 # set train train_correlation_method = "" (empty string) if no correlation matrix is needed for training
 # train_correlation_method = "PandasPearsonCorrelation"
 # train_correlation_method = "PandasSpearmanCorrelation"
-train_correlation_method = ""
+train_correlation_method = "PandasPearsonCorrelation"
 feature_cluster_correlation_method = "spearman"
 
 [selection_method]
 # methods = ["RandomForestLightGBM", "ExtraTreesLightGBM", "GradientBoostingDecisionTreeLightGBM", ]#"LassoSklearn", "RandomForestSklearn",] # "ReverseLassoSklearn"]
 # methods = ["ExtraTreesLightGBM", "LassoSklearn", "RandomForestSklearn", "ReverseLassoSklearn", "ReverseRandomForestSklearn"]
-methods = ["ExtraTreesLightGBM", "LassoSklearn", "RandomForestLightGBM"]
+methods = ["ExtraTreesLightGBM", "LassoSklearn", "RandomForestLightGBM", "ReverseLassoSklearn"]
 
 [aggregation_method_cv]
 methods = ["ArithmeticMean"]
