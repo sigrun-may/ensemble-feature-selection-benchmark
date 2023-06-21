@@ -35,7 +35,7 @@ max_concurrent_trials_hpo_ray = 1
 
 # cross-validation
 inner_cv = 1
-outer_cv = 2
+outer_cv = 1
 
 # preprocessing
 yeo_johnson_c = 4
