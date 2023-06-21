@@ -4,6 +4,7 @@
 
 
 """LightGBM training."""
+import os
 
 import logging
 import warnings
@@ -35,6 +36,9 @@ def calculate_score(data_inner_cv_iteration, parameters):
     # create dataset for lightgbm
     lgb_train = lgb.Dataset(x_train, y_train)
     lgb_eval = [lgb.Dataset(x_validation, y_validation)]
+
+    # set cpu count for parallelization
+    parameters["num_threads"] = os.cpu_count()
 
     # build model
     eval_result = {}
