@@ -55,7 +55,17 @@ def get_results(
     if "lasso" in selection_method.__name__:
         param_space = {"alpha": tune.qloguniform(0.001, 1, 0.001), "random_state": 42}
     elif "random_forest" in selection_method.__name__:
-        param_space = {"n_estimators": tune.randint(1, 150), "random_state": 42}
+        param_space =  {
+                            "random_state": 42,
+                            "criterion": "entropy",
+                            "max_depth": tune.randint(2, 6),
+                            "min_samples_leaf": tune.randint(
+                                2,
+                                math.floor(settings.data.number_of_samples / 2),
+                            ),
+                            "n_jobs": -1,
+                            # "n_jobs": settings_id.parallel_processes.n_jobs_training,
+                        }
     elif "svm" in selection_method.__name__:
         param_space = {"C": tune.uniform(1, 10), "random_state": 42}
     elif "lightgbm" in selection_method.__name__:
