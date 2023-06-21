@@ -15,7 +15,7 @@ from ensemble_feature_selection_benchmark import store_experiments
 from ensemble_feature_selection_benchmark.feature_selection_ray.feature_selection_classes import (
     str_to_class,
 )
-
+outer_cv_iterations = settings.cv.n_outer_folds
 
 @ray.remote
 def _remote_select_feature_subsets(
@@ -69,7 +69,7 @@ def _parallel_outer_cv(
     return raw_selection_result_object_list
 
 
-@ray.remote(scheduling_strategy="SPREAD", num_cpus=settings.cv.n_outer_folds)  # (num_cpus=3)
+@ray.remote(scheduling_strategy="SPREAD", num_cpus=outer_cv_iterations)  # (num_cpus=3)
 def _remote_parallel_outer_cv(
     settings_id,
     preprocessed_data_id,
