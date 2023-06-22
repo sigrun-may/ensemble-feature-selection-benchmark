@@ -31,7 +31,7 @@ reverse_feature_selection = 68
 # hyperparameter optimization
 hpo_reverse = 1
 hpo_standard = -1
-max_concurrent_trials_hpo_ray = 6
+max_concurrent_trials_hpo_ray = 1
 
 # cross-validation
 inner_cv = 1
