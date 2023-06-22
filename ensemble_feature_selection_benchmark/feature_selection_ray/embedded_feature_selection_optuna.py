@@ -9,6 +9,7 @@ import os
 import math
 
 import logging
+from optuna import TrialPruned
 from typing import List
 
 import numpy as np
@@ -236,7 +237,7 @@ def select_features(
         shap_values_list = []
 
         # cross validation for the optimization of alpha
-        for data_id_inner_cv_iteration in preprocessed_data_inner_cv_id_list:
+        for step_number, data_id_inner_cv_iteration in enumerate(preprocessed_data_inner_cv_id_list):
             # parallel inner cross validation
             if settings_id.parallel_processes.inner_cv > 1:
                 # score, coefficients_list, shap_list = remote_calculate_score.options(
@@ -252,6 +253,11 @@ def select_features(
                 score, coefficients_list, shap_list = selection_method.calculate_score(
                     ray.get(data_id_inner_cv_iteration), hyperparameter_dict
                 )
+                if sum(coefficients_list) == 0:
+                    raise TrialPruned()
+                trial.report(np.mean(scores), step_number)
+                if trial.should_prune():
+                    raise TrialPruned()
             coefficients_lists.append(coefficients_list)
             scores.append(score)
             shap_values_list.append(shap_list)
