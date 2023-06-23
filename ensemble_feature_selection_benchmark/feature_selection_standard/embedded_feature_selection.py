@@ -159,7 +159,7 @@ def select_features(
         shap_values_lists = []
 
         # cross validation for the optimization of alpha
-        for step_count, data_inner_cv_iteration in enumerate(preprocessed_data_inner_cv_list):
+        for step_number, data_inner_cv_iteration in enumerate(preprocessed_data_inner_cv_list):
             score, selected_features, shap_list = selection_method.calculate_score(
                 data_inner_cv_iteration, hyperparameter_dict
             )
@@ -169,9 +169,9 @@ def select_features(
 
             if sum(selected_features) == 0:
                 raise TrialPruned()
-            trial.report(np.mean(scores_list), step_count)
+            trial.report(np.mean(scores_list), step_number)
             if trial.should_prune():
-                raise optuna.TrialPruned()
+                raise TrialPruned()
 
         assert (
             len(selected_features_lists)

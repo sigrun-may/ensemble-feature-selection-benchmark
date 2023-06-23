@@ -121,11 +121,12 @@ def _optimize_evaluation_metric(
         #     print("study stopped")
         #     trial.study.stop()
         #     raise TrialPruned()
+        print(selection_method.__name__)
         if "lasso" in selection_method.__name__:
             hyperparameter_dict = {
                 "alpha": trial.suggest_float("alpha", 0.01, 1.0, log=True)
             }
-        elif "random_forest" in selection_method.__name__:
+        elif ("random_forest" in selection_method.__name__) or ("trees" in selection_method.__name__):
             hyperparameter_dict = {
                 "random_state": 42,
                 "criterion": "absolute_error",

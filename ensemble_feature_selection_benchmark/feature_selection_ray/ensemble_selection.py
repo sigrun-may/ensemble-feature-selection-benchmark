@@ -15,7 +15,7 @@ from ensemble_feature_selection_benchmark import store_experiments
 from ensemble_feature_selection_benchmark.feature_selection_ray.feature_selection_classes import (
     str_to_class,
 )
-outer_cv_iterations = settings.cv.n_outer_folds
+
 
 @ray.remote
 def _remote_select_feature_subsets(
@@ -186,7 +186,7 @@ def ensemble_feature_selection(preprocessed_data_id):
                 )
                 del raw_selection_result
 
-    ray.get(parallel_methods_selection_object_references_list)
+    # ray.get(parallel_methods_selection_object_references_list)
 
     # reverse feature selection with parallel features
     for feature_selection_method in settings.selection_method.methods:

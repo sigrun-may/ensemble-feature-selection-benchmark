@@ -15,6 +15,7 @@ from ensemble_feature_selection_benchmark.feature_selection_methods import (
     standard_lightgbm,
     standard_sklearn_lasso,
     standard_sklearn_random_forest,
+    standard_sklearn_extra_trees,
     standard_sklearn_svm,
 )
 from ensemble_feature_selection_benchmark.feature_selection_ray import (
@@ -101,6 +102,33 @@ class RandomForestSklearn(FeatureSelectionBaseClass):
             )
 
 
+class ExtraTreesSklearn(FeatureSelectionBaseClass):
+    @staticmethod
+    def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
+        assert len(kwargs) == 1
+        assert "settings_id" in kwargs
+        settings_id = kwargs["settings_id"]
+
+        if settings_id.parallel_processes.max_concurrent_trials_hpo_ray != 1:
+            return embedded_feature_selection_hpo_ray.select_features(
+                settings_id,
+                data,
+                outer_cv_iteration,
+                n_trials=settings_id.RandomForestSklearnOptuna.n_trials,
+                direction="max",  # maximizing accuracy
+                selection_method=standard_sklearn_extra_trees,
+            )
+        else:
+            return embedded_feature_selection_optuna.select_features(
+                settings_id,
+                data,
+                outer_cv_iteration,
+                n_trials=settings_id.RandomForestSklearnOptuna.n_trials,
+                direction="maximize",  # maximizing accuracy
+                selection_method=standard_sklearn_extra_trees,
+            )
+
+
 class SVC(FeatureSelectionBaseClass):
     @staticmethod
     def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
@@ -147,8 +175,6 @@ class RandomForestLightGBM(FeatureSelectionBaseClass):
         assert len(kwargs) == 1
         assert "settings_id" in kwargs
         settings_id = kwargs["settings_id"]
-        # inner_preprocessed_data_splits_list = ray.get(ray.get(data).inner_preprocessed_data_splits_list[outer_cv_iteration])
-        # train_data_outer_cv_df = ray.get(ray.get(data).outer_preprocessed_data_splits[outer_cv_iteration]).train_data_outer_cv_df
 
         if settings_id.parallel_processes.max_concurrent_trials_hpo_ray != 1:
             return embedded_feature_selection_hpo_ray.select_features(
@@ -309,6 +335,21 @@ class ReverseRandomForestSklearn(FeatureSelectionBaseClass):
             settings_id,
             preprocessed_data_id=data,
             selection_method=standard_sklearn_random_forest.train_random_forest_regressor,
+            outer_cv_iteration=outer_cv_iteration,
+        )
+
+
+class ReverseExtraTreesSklearn(FeatureSelectionBaseClass):
+    @staticmethod
+    def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
+        assert len(kwargs) == 1
+        assert "settings_id" in kwargs
+        settings_id = kwargs["settings_id"]
+
+        return reverse_selection.calculate_labeled_and_unlabeled_validation_metrics(
+            settings_id,
+            preprocessed_data_id=data,
+            selection_method=standard_sklearn_extra_trees.train_extra_trees_regressor,
             outer_cv_iteration=outer_cv_iteration,
         )
 

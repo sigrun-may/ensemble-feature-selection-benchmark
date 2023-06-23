@@ -15,6 +15,7 @@ from ensemble_feature_selection_benchmark.feature_selection_methods import (
     standard_lightgbm,
     standard_sklearn_lasso,
     standard_sklearn_random_forest,
+    standard_sklearn_extra_trees,
     standard_sklearn_svm,
 )
 from ensemble_feature_selection_benchmark.feature_selection_standard import (
@@ -254,6 +255,16 @@ class ReverseRandomForestSklearn(FeatureSelectionBaseClass):
         return reverse_selection.labeled_and_unlabeled_training(
             preprocessed_data=data,
             selection_method=standard_sklearn_random_forest.train_random_forest_regressor,
+            direction="maximize",  # maximizing r2 metric
+            outer_cv_iteration=outer_cv_iteration,
+        )
+
+class ReverseExtraTreesSklearn(FeatureSelectionBaseClass):
+    @staticmethod
+    def select_feature_subsets(data, outer_cv_iteration: int, **kwargs):
+        return reverse_selection.labeled_and_unlabeled_training(
+            preprocessed_data=data,
+            selection_method=standard_sklearn_extra_trees.train_extra_trees_regressor,
             direction="maximize",  # maximizing r2 metric
             outer_cv_iteration=outer_cv_iteration,
         )
