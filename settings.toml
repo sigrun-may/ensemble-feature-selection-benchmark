@@ -24,9 +24,9 @@ pos_label = 1
 remove_perfect_separated_features = false
 
 [parallel_processes]
-init_ray = false
+init_ray = true
 feature_selection_methods = 2
-reverse_feature_selection = 1
+reverse_feature_selection = 70
 
 # hyperparameter optimization
 hpo_reverse = 1
