@@ -65,7 +65,7 @@ def select_features(
     """Select feature subset with given feature selection method.
 
     Args:
-        preprocessed_data: yj +pearson train data
+        preprocessed_data: yeo johnson transformed data and corresponding pearson correlation matrix
         outer_cv_iteration: index of outer cross-validation loop
         n_trials: number of trials for the hyperparameter optimization for the embedded feature selection
         direction: direction for optimization -> can be "maximize" or "minimize"
@@ -95,7 +95,7 @@ def select_features(
                     2,
                     math.floor(settings.data.number_of_samples / 2),
                 ),
-                "n_jobs": settings.parallel_processes.n_jobs_training,
+                # "n_jobs": settings.parallel_processes.n_jobs_training,
             }
         elif "svm" in selection_method.__name__:
             hyperparameter_dict = {
