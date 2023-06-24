@@ -78,7 +78,6 @@ def select_features(
     """
 
     def optuna_objective(trial):
-        print(selection_method.__name__)
         # select hyperparemters for the different embedded feature selection methods for ensemble feature selection
         if "lasso" in selection_method.__name__:
             hyperparameter_dict = {
