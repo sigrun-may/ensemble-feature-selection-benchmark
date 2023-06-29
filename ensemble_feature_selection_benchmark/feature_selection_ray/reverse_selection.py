@@ -136,7 +136,7 @@ def _optimize_evaluation_metric(
                     2,
                     math.floor(settings.data.number_of_samples / 2),
                 ),
-                "n_jobs": 1,
+                "n_jobs": -1,
             }
         else:
             raise ValueError("No valid selection method for reverse feature selection")
@@ -172,8 +172,8 @@ def _optimize_evaluation_metric(
     study.optimize(
         optuna_objective,
         n_trials=n_trials,
-        n_jobs=settings.parallel_processes.hpo_reverse,
-        gc_after_trial=True,
+        n_jobs=1,
+        # gc_after_trial=True,
     )
     # initialize return values
     best_trial_value = 0.0
