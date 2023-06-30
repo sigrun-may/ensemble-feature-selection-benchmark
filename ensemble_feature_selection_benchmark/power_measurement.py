@@ -67,7 +67,8 @@ def _measure_power_usage(node_power_measurement_dict, event):
             "Workflow element can be 'preprocessing' or 'feature_selection'"
         )
     while True:
-        time.sleep(benchmark_interval)
+        # TODO uncomment time.sleep(benchmark_interval)
+        time.sleep(1)
         node_power_measurement_dict = _get_actual_node_power_usage(
             node_power_measurement_dict
         )
