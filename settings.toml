@@ -19,14 +19,14 @@ name = "separated"
 # name = "tiny"
 folder = "/experiments/data"
 number_of_samples = 30
-number_of_features = 500
+number_of_features = 5000
 pos_label = 1
 remove_perfect_separated_features = false
 
 [parallel_processes]
-init_ray = false
-feature_selection_methods = 1
-reverse_feature_selection = 1
+init_ray = true
+feature_selection_methods = 2
+reverse_feature_selection = 74
 
 # hyperparameter optimization
 hpo_reverse = 1
@@ -35,7 +35,7 @@ max_concurrent_trials_hpo_ray = 1
 
 # cross-validation
 inner_cv = 1
-outer_cv = 1
+outer_cv = 6
 
 # preprocessing
 yeo_johnson_c = 12
@@ -81,7 +81,7 @@ tree_learner = "feature"
 baseBoardIds = [4, 3, 1]
 
 [preprocessing]
-scale_and_power_transform = false
+scale_and_power_transform = true
 preprocessing_parallel = "PreprocessingSerial"
 # "YeoJohnsonSklearn" "YeoJohnsonC" "YeoJohnsonFPGA"
 yeo_johnson = "YeoJohnsonC"
@@ -96,14 +96,14 @@ path_yeo_johnson_fpga_module = "yeo-johnson-transformation/python_bindings/yeo_j
 # set train train_correlation_method = "" (empty string) if no correlation matrix is needed for training
 # train_correlation_method = "PandasPearsonCorrelation"
 # train_correlation_method = "PandasSpearmanCorrelation"
-# train_correlation_method = "PandasPearsonCorrelation"
-train_correlation_method = ""
+train_correlation_method = "PandasPearsonCorrelation"
+# train_correlation_method = ""
 feature_cluster_correlation_method = "spearman"
 
 [selection_method]
 # methods = ["ExtraTreesLightGBM", "RandomForestLightGBM", "GradientBoostingDecisionTreeLightGBM", "LassoSklearn", "RandomForestSklearn", "ReverseLassoSklearn", "ReverseRandomForestSklearn"]
-# methods = ["ExtraTreesLightGBM", "LassoSklearn", "RandomForestLightGBM", "ReverseLassoSklearn", "ReverseRandomForestSklearn", "ReverseExtraTreesSklearn"]
-methods = ["ExtraTreesLightGBM"]
+methods = ["ExtraTreesLightGBM", "LassoSklearn", "RandomForestLightGBM", "ReverseLassoSklearn", "ReverseRandomForestSklearn", "ReverseExtraTreesSklearn"]
+# methods = ["ExtraTreesLightGBM"]
 
 [aggregation_method_cv]
 methods = ["ArithmeticMean"]
@@ -146,7 +146,7 @@ n_trials = 30
 n_trials = 100
 
 [LightgbmOptuna]
-n_trials = 15
+n_trials = 100
 
 [cv]
 n_outer_folds = 6
