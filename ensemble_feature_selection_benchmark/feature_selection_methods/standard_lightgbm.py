@@ -38,7 +38,7 @@ def calculate_score(data_inner_cv_iteration, parameters):
     lgb_eval = [lgb.Dataset(x_validation, y_validation)]
 
     # set cpu count for parallelization
-    # TODO uncomment parameters["num_threads"] = os.cpu_count()
+    parameters["num_threads"] = os.cpu_count()
 
     # build model
     eval_result = {}
