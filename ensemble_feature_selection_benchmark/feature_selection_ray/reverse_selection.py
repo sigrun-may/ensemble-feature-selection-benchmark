@@ -136,7 +136,7 @@ def _optimize_evaluation_metric(
                     2,
                     math.floor(settings.data.number_of_samples / 2),
                 ),
-                "n_jobs": -1,
+                "n_jobs": 1,
             }
         else:
             raise ValueError("No valid selection method for reverse feature selection")
@@ -324,7 +324,7 @@ def _calculate_validation_metrics_per_feature(
     return labeled_validation_metric_value, unlabeled_validation_metric_value
 
 
-@ray.remote(num_returns=2, scheduling_strategy="SPREAD")
+@ray.remote(num_returns=2)
 def _remote_calculate_validation_metrics_per_feature(
     settings, preprocessed_data, outer_cv_iteration, target_feature, selection_method
 ):
