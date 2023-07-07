@@ -123,21 +123,21 @@ def ensemble_feature_selection(preprocessed_data_id):
             if (settings.parallel_processes.feature_selection_methods > 1) and (
                 settings.parallel_processes.outer_cv > 1
             ):
-                # none_object_reference = _remote_parallel_outer_cv.remote(
-                #     settings_id,
-                #     preprocessed_data_id,
-                #     feature_selection_class,
-                #     feature_selection_method,
-                # )
-                # parallel_methods_selection_object_references_list.append(
-                #     none_object_reference
-                # )
-                _remote_parallel_outer_cv.remote(
+                none_object_reference = _remote_parallel_outer_cv.remote(
                     settings_id,
                     preprocessed_data_id,
                     feature_selection_class,
                     feature_selection_method,
                 )
+                parallel_methods_selection_object_references_list.append(
+                    none_object_reference
+                )
+                # _remote_parallel_outer_cv.remote(
+                #     settings_id,
+                #     preprocessed_data_id,
+                #     feature_selection_class,
+                #     feature_selection_method,
+                # )
 
             # parallel outer cross-validation and serial feature selection methods
             elif (settings.parallel_processes.feature_selection_methods < 2) and (
@@ -186,7 +186,7 @@ def ensemble_feature_selection(preprocessed_data_id):
                 )
                 del raw_selection_result
 
-    # ray.get(parallel_methods_selection_object_references_list)
+    ray.get(parallel_methods_selection_object_references_list)
 
     # reverse feature selection with parallel features
     for feature_selection_method in settings.selection_method.methods:
