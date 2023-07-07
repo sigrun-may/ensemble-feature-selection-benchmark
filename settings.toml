@@ -24,9 +24,9 @@ pos_label = 1
 remove_perfect_separated_features = false
 
 [parallel_processes]
-init_ray = true
-feature_selection_methods = 2
-reverse_feature_selection = 74
+init_ray = false
+feature_selection_methods = 1
+reverse_feature_selection = 1
 
 # hyperparameter optimization
 hpo_reverse = 1
@@ -35,7 +35,7 @@ max_concurrent_trials_hpo_ray = 1
 
 # cross-validation
 inner_cv = 1
-outer_cv = 6
+outer_cv = 1
 
 # preprocessing
 yeo_johnson_c = 12
@@ -64,7 +64,7 @@ n_jobs_training = 1
 ## "serial" = single machine tree learner
 ## "feature" = feature parallel tree learner, aliases: feature_parallel
 ## more details in https://lightgbm.readthedocs.io/en/latest/Parallel-Learning-Guide.html
-#tree_learner = "serial"
+tree_learner = "serial"
 
 ## for parallel gpu training:
 #num_threads_lightgbm = 0
@@ -73,9 +73,9 @@ n_jobs_training = 1
 
 
 ## for parallel cpu training:
-num_threads_lightgbm = 6  # is set to available number of cores within method
+num_threads_lightgbm = 1  # is set to available number of cores within method
 device_type_lightgbm = "cpu"
-tree_learner = "feature"
+# tree_learner = "feature"
 
 [nodes]
 baseBoardIds = [4, 3, 1]
