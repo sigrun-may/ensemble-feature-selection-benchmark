@@ -166,7 +166,6 @@ def _optimize(
         _optuna_objective,
         n_trials=n_trials,
         n_jobs=settings.parallel_processes.hpo_reverse,
-        gc_after_trial=True,
     )
     # initialize return values
     best_trial_value = 0
