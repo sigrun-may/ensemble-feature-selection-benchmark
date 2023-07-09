@@ -310,7 +310,9 @@ class YeoJohnsonFPGA(PowerTransformerBaseClass):
         start = datetime.now()
         # calculate lambdas
         lambdas = yeo_johnson_fpga.yeo_johnson_fpga_interface(train_np, settings.preprocessing.interval_parameter)
-        print("duration= ", datetime.now() - start)
+        print(len(lambdas))
+        print(lambdas)
+        assert len(lambdas) == train_np.shape[1]
 
         # transform train data
         train_pd = unlabeled_data_df.iloc[train_index, :]
